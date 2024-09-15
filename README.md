@@ -15,3 +15,8 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 # chinhoyi_municipality
+# chinhoyi_municipality
+
+
+
+if cd flutter; then git pull && cd .. ; else git clone https://github.com/flutter/flutter.git; fi && ls flutter/bin/flutter doctor && flutter/bin/flutter clean && flutter/bin/flutter config --enable-web
