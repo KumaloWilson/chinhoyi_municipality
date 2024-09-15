@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "622969934256",
+    "project_id": "muni-ci-pa-lity-project",
+    "storage_bucket": "muni-ci-pa-lity-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622969934256:android:b0ecf443774849d5854675",
+        "android_client_info": {
+          "package_name": "com.municipality.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDms6M7qY8BIMVBLOzp6winsjxvr-_cZe4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
