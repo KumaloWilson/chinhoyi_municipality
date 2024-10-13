@@ -5,7 +5,8 @@ part 'property.g.dart';  // The generated file for JSON serialization
 @JsonSerializable(explicitToJson: true)
 class Property {
   String propertyId;             // Unique ID for each property
-  String address;                // Full address of the property
+  String houseNumber;            // Current residential address (Street, Suburb, etc.)
+  String suburb;             // Full address of the property
   String propertyType;           // Residential, Commercial, Municipal, etc.
   double propertySize;           // Size in square meters or feet
   String ownershipType;          // Owned by Resident, Rented, Municipal Lease
@@ -18,7 +19,8 @@ class Property {
 
   Property({
     required this.propertyId,
-    required this.address,
+    required this.houseNumber,
+    required this.suburb,
     required this.propertyType,
     required this.propertySize,
     required this.ownershipType,
@@ -33,7 +35,8 @@ class Property {
   // CopyWith method to update specific fields
   Property copyWith({
     String? propertyId,
-    String? address,
+    String? suburb,
+    String? houseNumber,
     String? propertyType,
     double? propertySize,
     String? ownershipType,
@@ -46,7 +49,8 @@ class Property {
   }) {
     return Property(
       propertyId: propertyId ?? this.propertyId,
-      address: address ?? this.address,
+      suburb: suburb ?? this.suburb,
+      houseNumber: houseNumber ?? this.houseNumber,
       propertyType: propertyType ?? this.propertyType,
       propertySize: propertySize ?? this.propertySize,
       ownershipType: ownershipType ?? this.ownershipType,

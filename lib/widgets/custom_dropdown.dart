@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class CustomDropDown extends StatelessWidget {
   final List<String> items;
   final String selectedValue;
-  final IconData prefixIcon;
+  final IconData? prefixIcon;
   final void Function(String?)? onChanged;
   final bool isEnabled; // New property to enable/disable the dropdown
 
   const CustomDropDown({
     super.key,
-    required this.prefixIcon,
+    this.prefixIcon,
     required this.items,
     required this.selectedValue,
     required this.onChanged,

@@ -8,7 +8,8 @@ part of 'property.dart';
 
 Property _$PropertyFromJson(Map<String, dynamic> json) => Property(
       propertyId: json['propertyId'] as String,
-      address: json['address'] as String,
+      houseNumber: json['houseNumber'] as String,
+      suburb: json['suburb'] as String,
       propertyType: json['propertyType'] as String,
       propertySize: (json['propertySize'] as num).toDouble(),
       ownershipType: json['ownershipType'] as String,
@@ -26,7 +27,8 @@ Property _$PropertyFromJson(Map<String, dynamic> json) => Property(
 
 Map<String, dynamic> _$PropertyToJson(Property instance) => <String, dynamic>{
       'propertyId': instance.propertyId,
-      'address': instance.address,
+      'houseNumber': instance.houseNumber,
+      'suburb': instance.suburb,
       'propertyType': instance.propertyType,
       'propertySize': instance.propertySize,
       'ownershipType': instance.ownershipType,

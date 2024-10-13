@@ -24,7 +24,7 @@ class MainScreen extends StatelessWidget {
               if (!Dimensions.isSmallScreen) Sidebar(controller: _controller),
               Expanded(
                 child: Center(
-                  child: selectedRole == UserRole.staff
+                  child: selectedRole == UserRole.admin
                     ? AdminTabScreensContainer(
                         controller: _controller,
                       )

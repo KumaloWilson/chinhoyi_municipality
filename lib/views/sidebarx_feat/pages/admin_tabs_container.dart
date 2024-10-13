@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_residents.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 class AdminTabScreensContainer extends StatelessWidget {
@@ -19,7 +20,7 @@ class AdminTabScreensContainer extends StatelessWidget {
           case 0:
             return const Center(child: Text('Screen 1'),);
           case 1:
-            return const Center(child: Text('Screen 2'),);
+            return const ManageResidentsScreen();
           case 2:
             return const Center(child: Text('Screen 3'),);
           default:
