@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:municipality/core/utils/logs.dart';
+import 'package:municipality/services/resident_services.dart';
 import 'package:municipality/services/staff_services.dart';
 
 import '../core/utils/api_response.dart';
@@ -50,14 +52,12 @@ class AuthServices {
 
   // Login with email and password
 
-  // Login with email and password
   static Future<APIResponse<User?>> staffLogin({
     required String emailAddress,
     required String password,
   }) async {
     try {
-      final UserCredential loginResponse = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: emailAddress, password: password);
+      final UserCredential loginResponse = await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailAddress, password: password);
 
       if (loginResponse.user != null) {
         return APIResponse(
@@ -69,8 +69,9 @@ class AuthServices {
             success: false, message: 'Failed to login. Please try again.');
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        final userDoc =  await StaffServices.fetchTempUser(profileEmail: emailAddress);
+      if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
+        // Check if the user profile exists
+        final userDoc = await StaffServices.fetchUserProfile(profileEmail: emailAddress);
 
         if (userDoc.data != null) {
           try {
@@ -80,11 +81,7 @@ class AuthServices {
 
             if (userCredential.user != null) {
               await userCredential.user!.updateProfile(
-                displayName: userDoc.data!.name,
-                photoURL: userDoc.data!.profilePicture!.isNotEmpty ||
-                        userDoc.data!.profilePicture != null
-                    ? userDoc.data!.profilePicture
-                    : null,
+                displayName: "${userDoc.data!.firstName} ${userDoc.data!.firstName}",
               );
 
               await userCredential.user!.sendEmailVerification();
@@ -92,7 +89,8 @@ class AuthServices {
             return APIResponse(
                 success: true,
                 data: userCredential.user,
-                message: 'User profile found and login successful');
+                message: 'User profile found and login successful'
+            );
           } on FirebaseAuthException catch (signUpError) {
             // Handle signup errors
             switch (signUpError.code) {
@@ -112,6 +110,8 @@ class AuthServices {
           return APIResponse(
               success: false, message: 'No user found for that email.');
         }
+      } else if (e.code == 'wrong-password') {
+        return APIResponse(success: false, message: 'Incorrect password.');
       } else {
         switch (e.code) {
           case 'invalid-email':
@@ -120,8 +120,6 @@ class AuthServices {
           case 'user-disabled':
             return APIResponse(
                 success: false, message: 'User account is disabled.');
-          case 'wrong-password':
-            return APIResponse(success: false, message: 'Incorrect password.');
           default:
             return APIResponse(
                 success: false,
@@ -134,13 +132,14 @@ class AuthServices {
     }
   }
 
+
+
   static Future<APIResponse<User?>> residentLogin({
     required String emailAddress,
     required String password,
   }) async {
     try {
-      final UserCredential loginResponse = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: emailAddress, password: password);
+      final UserCredential loginResponse = await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailAddress, password: password);
 
       if (loginResponse.user != null) {
         return APIResponse(
@@ -152,10 +151,49 @@ class AuthServices {
             success: false, message: 'Failed to login. Please try again.');
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return APIResponse(
-            success: false, message: 'No user found for that email.'
-        );
+      if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
+        // Check if the user profile exists
+        final userDoc = await ResidentServices.fetchResidentProfile(profileEmail: emailAddress);
+
+        if (userDoc.data != null) {
+          try {
+            final UserCredential userCredential = await FirebaseAuth.instance
+                .createUserWithEmailAndPassword(
+                email: emailAddress, password: password);
+
+            if (userCredential.user != null) {
+              await userCredential.user!.updateProfile(
+                displayName: "${userDoc.data!.firstName} ${userDoc.data!.firstName}",
+              );
+
+              await userCredential.user!.sendEmailVerification();
+            }
+            return APIResponse(
+                success: true,
+                data: userCredential.user,
+                message: 'User profile found and login successful'
+            );
+          } on FirebaseAuthException catch (signUpError) {
+            // Handle signup errors
+            switch (signUpError.code) {
+              case 'email-already-in-use':
+                return APIResponse(
+                    success: false, message: 'Email Address already in use');
+              case 'weak-password':
+                return APIResponse(
+                    success: false, message: 'Your password is too weak');
+              default:
+                return APIResponse(
+                    success: false,
+                    message: 'Unknown error, please contact Support');
+            }
+          }
+        } else {
+          return APIResponse(
+              success: false, message: 'No user found for that email.');
+        }
+      } else if (e.code == 'wrong-password') {
+        return APIResponse(success: false, message: 'Incorrect password.');
       } else {
         switch (e.code) {
           case 'invalid-email':
@@ -164,8 +202,6 @@ class AuthServices {
           case 'user-disabled':
             return APIResponse(
                 success: false, message: 'User account is disabled.');
-          case 'wrong-password':
-            return APIResponse(success: false, message: 'Incorrect password.');
           default:
             return APIResponse(
                 success: false,

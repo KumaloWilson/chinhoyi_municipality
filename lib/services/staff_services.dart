@@ -74,7 +74,7 @@ class StaffServices {
     }
   }
 
-  static Future<APIResponse<dynamic>> fetchTempUser(
+  static Future<APIResponse<String>> fetchTempUser(
       {required String profileEmail}) async {
     try {
       final usersRef = FirebaseFirestore.instance.collection('temp_staff');
@@ -91,9 +91,11 @@ class StaffServices {
             await usersRef.doc(docSnapshot.id).delete();
           }
 
+          DevLogs.logInfo('USER EMAIL FOUND');
+
           return APIResponse(
             success: true,
-            data: {"email": profileEmail},
+            data: profileEmail,
             message: 'User fetched successfully',
           );
         } else {

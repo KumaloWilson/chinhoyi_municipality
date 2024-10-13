@@ -68,7 +68,52 @@ class AuthHelpers {
     }
   }
 
-  static void validateAndSubmitForm({
+  static void customerValidateAndSubmitForm({
+    required String password,
+    required String email,
+  }) async {
+    if (password.isEmpty) {
+      CustomSnackBar.showErrorSnackbar(message: 'Password is required.');
+      return;
+    }
+
+    if (password.length < 8) {
+      CustomSnackBar.showErrorSnackbar(message: 'Password too Short');
+      return;
+    }
+
+    if (!GetUtils.isEmail(email)) {
+      CustomSnackBar.showErrorSnackbar(message: 'Please input a valid email');
+      return;
+    }
+
+    Get.dialog(
+      const CustomLoader(
+        message: 'Logging in',
+      ),
+      barrierDismissible: false,
+    );
+
+    await AuthServices.residentLogin(
+      emailAddress: email.trim(),
+      password: password.trim(),
+    ).then((response) {
+      if (!response.success && response.message != 'No user found for that email.') {
+        if (!Get.isSnackbarOpen) Get.back();
+        CustomSnackBar.showErrorSnackbar(message: response.message ?? 'Something went wrong');
+      } else if (!response.success && response.message == 'No user found for that email.') {
+        if (!Get.isSnackbarOpen) Get.back();
+        CustomSnackBar.showErrorSnackbar(message: response.message ?? 'Something went wrong',);
+      } else {
+        if (Get.isDialogOpen!) Get.back();
+
+        CustomSnackBar.showSuccessSnackbar(message: 'Login Successful',);
+        Get.offAllNamed(RoutesHelper.initialScreen);
+      }
+    });
+  }
+
+  static void staffValidateAndSubmitForm({
     required String password,
     required String email,
   }) async {
@@ -132,7 +177,7 @@ class AuthHelpers {
       });
     }
 
-    return userRole;
+    return userRole ?? UserRole.customer;
   }
 }
 

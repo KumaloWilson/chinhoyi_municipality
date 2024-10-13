@@ -134,7 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   fontSize: 12
                               ),
                             ),
-                            onTap: ()=> AuthHelpers.validateAndSubmitForm(
+                            onTap: ()=> AuthHelpers.customerValidateAndSubmitForm(
                                 email: emailController.text.trim(),
                                 password: passwordController.text.trim()
                             )

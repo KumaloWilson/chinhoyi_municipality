@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:municipality/models/resident.dart';
 import 'package:municipality/views/auth/customer_login_page.dart';
 import 'package:municipality/views/auth/staff_login_page.dart';
+import 'package:municipality/views/sidebarx_feat/pages/staff_pages/add_user.dart';
 import 'package:municipality/views/splash/splash.dart';
 import '../../views/auth/email_verification.dart';
 import '../../views/auth/email_verification_success.dart';
@@ -26,7 +27,7 @@ class RoutesHelper {
   static String userHomeScreen = '/userHome';
   static String adminStaffStatsScreen = '/adminStaffStats';
   static String adminShiftStatsScreen = '/adminShiftStats';
-  static String adminAddUserScreen = '/addUser';
+  static String addStaffScreen = '/addUser';
   static String viewUserScreen = '/viewUsers';
   static String userProfileScreen = '/profile';
   static String residentDetailsScreen = '/residentDetails';
@@ -57,6 +58,7 @@ class RoutesHelper {
     GetPage(name: forgotPasswordScreen, page: () => ForgotPasswordScreen()),
     GetPage(name: splashScreen, page: () => const SplashScreen()),
     GetPage(name: addResidentsScreen, page: () => const AddResidentScreen()),
+    GetPage(name: addStaffScreen, page: () => const AddStaffScreen()),
     GetPage(
         name: residentDetailsScreen,
         page: () {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:municipality/core/utils/logs.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/color_constants.dart';
@@ -19,6 +20,8 @@ class Sidebar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRole = ref.watch(ProviderUtils.userRoleProvider);
+
+    DevLogs.logWarning(userRole.toString());
 
     return SidebarX(
       controller: _controller,
@@ -103,14 +106,10 @@ class Sidebar extends ConsumerWidget {
           label: 'Dashboard',
         ),
         const SidebarXItem(
-          icon: FontAwesomeIcons.users,
+          icon: FontAwesomeIcons.house,
           label: 'Manage Residents',
         ),
-        const SidebarXItem(
-          icon: FontAwesomeIcons.house,
-          label: 'Manage Houses',
-        ),
-        const SidebarXItem(
+        if(userRole == UserRole.admin) const SidebarXItem(
           icon: FontAwesomeIcons.users,
           label: 'Manage Staff',
         ),

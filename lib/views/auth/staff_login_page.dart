@@ -126,7 +126,7 @@ class _StaffLoginScreenState extends State<StaffLoginScreen> {
                                 fontSize: 12
                             ),
                           ),
-                          onTap: ()=> AuthHelpers.validateAndSubmitForm(
+                          onTap: ()=> AuthHelpers.staffValidateAndSubmitForm(
                               email: emailController.text.trim(),
                               password: passwordController.text.trim()
                           )
@@ -198,9 +198,16 @@ class _StaffLoginScreenState extends State<StaffLoginScreen> {
                 ),
               ),
 
-              const VerticalDivider(
-                color: Colors.black,
+              const FadeInSlide(
+                duration: 2.2,
+                child: SizedBox(
+                  height: 32,
+                  child: VerticalDivider(
+                    color: Colors.grey,
+                  ),
+                ),
               ),
+
 
               FadeInSlide(
                 duration: 2.2,

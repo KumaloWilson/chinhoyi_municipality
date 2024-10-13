@@ -4,38 +4,40 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:municipality/core/utils/routes.dart';
-import 'package:municipality/models/resident.dart';
-import 'package:municipality/views/sidebarx_feat/pages/staff_pages/tabs/residents_tab.dart';
+import 'package:municipality/models/staff_profile.dart';
+import 'package:municipality/views/sidebarx_feat/pages/staff_pages/tabs/staff_tab.dart';
+
 import '../../../../core/constants/color_constants.dart';
 import '../../../../core/constants/dimensions.dart';
 import '../../../../core/utils/providers.dart';
 import '../../../../widgets/text_fields/custom_text_field.dart';
 
-class ManageResidentsScreen extends ConsumerStatefulWidget {
-  const ManageResidentsScreen({super.key});
+class ManageStaffScreen extends ConsumerStatefulWidget {
+  const ManageStaffScreen({super.key});
 
   @override
-  ConsumerState<ManageResidentsScreen> createState() => _AdminHomeScreenState();
+  ConsumerState<ManageStaffScreen> createState() => _ManageStaffScreenState();
 }
 
-class _AdminHomeScreenState extends ConsumerState<ManageResidentsScreen> with SingleTickerProviderStateMixin {
+class _ManageStaffScreenState extends ConsumerState<ManageStaffScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final List<Color> colors = [
+    Colors.blue,
+    Colors.green,
+    Colors.orange,
+    Colors.purple,
+    Colors.amber
+  ];
   final _key = GlobalKey<ScaffoldState>();
   final user = FirebaseAuth.instance.currentUser;
   String searchTerm = '';
   final TextEditingController _searchTextEditingController = TextEditingController();
 
-  final List<String> suburbs = [
-    'Brundish', 'Cherima', 'Chikonohono', 'Chitambo', 'Chikangwe', 'Cold Stream',
-    'Gadzema', 'Gunhill', 'Hunyani', 'Katanda', 'Madzibaba', 'Mapako',
-    'Mhangura', 'Mpata', 'Ngezi', 'Nyamhunga', 'Orange Grove', 'Pfura',
-    'Ruvimbo', 'Rusununguko', 'White City', 'Zvimba', 'Chinhoyi Township',
-  ];
-
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: suburbs.length, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -46,7 +48,10 @@ class _AdminHomeScreenState extends ConsumerState<ManageResidentsScreen> with Si
 
   @override
   Widget build(BuildContext context) {
-    final staffState = ref.watch(ProviderUtils.residentsProvider);
+
+    final staffState = ref.watch(
+      ProviderUtils.staffProvider,
+    );
 
     return Scaffold(
       key: _key,
@@ -101,7 +106,7 @@ class _AdminHomeScreenState extends ConsumerState<ManageResidentsScreen> with Si
                     Expanded(
                       flex: 10,
                       child: CustomTextField(
-                        labelText: 'Find Resident',
+                        labelText: 'Find Staff',
                         prefixIcon: const Icon(Icons.search),
                         controller: _searchTextEditingController,
                         onChanged: (value) {
@@ -116,7 +121,7 @@ class _AdminHomeScreenState extends ConsumerState<ManageResidentsScreen> with Si
                       flex: 1,
                       child: GestureDetector(
                         onTap: () {
-                          Get.toNamed(RoutesHelper.addResidentsScreen);
+                          Get.toNamed(RoutesHelper.addStaffScreen);
                         },
                         child: Container(
                           height: 50,
@@ -146,20 +151,18 @@ class _AdminHomeScreenState extends ConsumerState<ManageResidentsScreen> with Si
     );
   }
 
-  Widget _buildContent(List<Resident> users) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  Widget _buildContent(List<StaffProfile> users) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Locations',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+          const Text(
+            'Staff',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
             ),
           ),
           TabBar(
@@ -175,18 +178,30 @@ class _AdminHomeScreenState extends ConsumerState<ManageResidentsScreen> with Si
               fontWeight: FontWeight.bold,
             ),
             tabAlignment: TabAlignment.start,
-            tabs: suburbs.map((suburb) => Tab(text: suburb)).toList(),
+            tabs: const [
+              Tab(text: 'Nurses'),
+              Tab(text: 'Social Workers'),
+              Tab(text: 'Care/Support Workers'),
+            ],
           ),
-          Expanded(
+          SizedBox(
+            height: 400,
             child: TabBarView(
-              physics: BouncingScrollPhysics(),
               controller: _tabController,
-              children: suburbs.map((suburb) {
-                return ResidentTab(
+              children: [
+                StaffTab(
                   searchTerm: searchTerm,
-                  users: users.where((resident) => resident.property.suburb == suburb).toList(),
-                );
-              }).toList(),
+                  users: users
+                ),
+                StaffTab(
+                  searchTerm: searchTerm,
+                  users: users
+                ),
+                StaffTab(
+                  searchTerm: searchTerm,
+                  users: users
+                ),
+              ],
             ),
           ),
         ],
