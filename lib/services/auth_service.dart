@@ -203,7 +203,7 @@ class AuthServices {
   }
 
   static Future<APIResponse<String?>> fetchUserRole(String email) async {
-    final usersRef = FirebaseFirestore.instance.collection('users');
+    final usersRef = FirebaseFirestore.instance.collection('staff');
 
     // Query the collection to find a user document with the specified email
     final querySnapshot = await usersRef.where('email', isEqualTo: email).get();
@@ -230,7 +230,7 @@ class AuthServices {
   }) async {
     try {
       // Check if the phone number exists in Firestore
-      final usersRef = FirebaseFirestore.instance.collection('users');
+      final usersRef = FirebaseFirestore.instance.collection('staff');
       final querySnapshot =
           await usersRef.where('phone_number', isEqualTo: phoneNumber).get();
 

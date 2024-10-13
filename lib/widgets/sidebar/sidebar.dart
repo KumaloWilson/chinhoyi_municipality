@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sidebarx/sidebarx.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/color_constants.dart';
+import '../../core/utils/providers.dart';
+import '../../core/utils/shared_pref.dart';
+import '../../global/global.dart';
+import '../../services/auth_service.dart';
 
-class Sidebar extends StatelessWidget {
+class Sidebar extends ConsumerWidget {
   const Sidebar({
     super.key,
     required SidebarXController controller,
@@ -12,69 +17,127 @@ class Sidebar extends StatelessWidget {
   final SidebarXController _controller;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRole = ref.watch(ProviderUtils.userRoleProvider);
+
     return SidebarX(
       controller: _controller,
       theme: SidebarXTheme(
-        margin: const EdgeInsets.all(10),
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
         decoration: BoxDecoration(
-          color: Theme.of(context).canvasColor,
-          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            colors: [Colors.blueGrey.shade800, Colors.blueGrey.shade600],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        hoverColor: Theme.of(context).primaryColor,
-        textStyle: TextStyle(color: Pallete.primaryColor),
-        selectedTextStyle: TextStyle(color: Pallete.primaryColor),
-        itemTextPadding: const EdgeInsets.only(left: 30),
-        selectedItemTextPadding: const EdgeInsets.only(left: 30),
+        hoverColor: Colors.blueGrey.withOpacity(0.4),
+        textStyle: TextStyle(
+            color: Pallete.primaryColor,
+            fontSize: 16,
+            fontWeight: FontWeight.w500),
+        selectedTextStyle: const TextStyle(
+            color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+        itemTextPadding: const EdgeInsets.only(left: 20),
+        selectedItemTextPadding: const EdgeInsets.only(left: 20),
         itemDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Theme.of(context).canvasColor),
+          color: Colors.transparent,
+          border: Border.all(color: Colors.transparent),
         ),
         selectedItemDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Pallete.primaryColor, width: 4),
+          color: Pallete.primaryColor.withOpacity(0.2),
+          border: Border.all(color: Pallete.primaryColor, width: 3),
         ),
         iconTheme: IconThemeData(
           color: Pallete.primaryColor,
-          size: 20,
+          size: 22,
         ),
-        selectedIconTheme: IconThemeData(
-          color: Pallete.primaryColor,
-          size: 20,
+        selectedIconTheme: const IconThemeData(
+          color: Colors.white,
+          size: 22,
         ),
       ),
       extendedTheme: SidebarXTheme(
-        width: 200,
+        width: 220,
         decoration: BoxDecoration(
-          color: Theme.of(context).canvasColor,
+          gradient: LinearGradient(
+            colors: [Colors.blueGrey.shade800, Colors.blueGrey.shade600],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
         ),
       ),
-      footerDivider: Divider(),
+      footerDivider: const Divider(
+        height: 1,
+        thickness: 1,
+        color: Colors.grey,
+      ),
       headerBuilder: (context, extended) {
         return SizedBox(
           height: 100,
           child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Icon(Icons.account_circle,
-                size: 50, color: Pallete.primaryColor),
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Icon(
+                Icons.account_circle,
+                size: 60,
+                color: Pallete.primaryColor,
+              ),
+            ),
           ),
         );
       },
       items: [
+        const SidebarXItem(
+          icon: Icons.dashboard,
+          label: 'Dashboard',
+        ),
+        const SidebarXItem(
+          icon: FontAwesomeIcons.users,
+          label: 'Manage Residents',
+        ),
+        const SidebarXItem(
+          icon: FontAwesomeIcons.house,
+          label: 'Manage Houses',
+        ),
+        const SidebarXItem(
+          icon: FontAwesomeIcons.users,
+          label: 'Manage Staff',
+        ),
+        const SidebarXItem(
+          icon: Icons.dashboard,
+          label: 'Service Requests',
+        ),
+        const SidebarXItem(
+          icon: Icons.dashboard,
+          label: 'Communication',
+        ),
+        const SidebarXItem(
+          icon: Icons.dashboard,
+          label: 'Notifications',
+        ),
+        const SidebarXItem(
+          icon: Icons.dashboard,
+          label: 'Profile',
+        ),
         SidebarXItem(
-          icon: Icons.home,
-          label: 'Home',
-          onTap: () {
-            debugPrint('Home');
+          icon: Icons.logout,
+          label: 'Sign Out',
+          onTap: () async {
+            await CacheUtils.clearUserRoleFromCache().then((_) async {
+              await AuthServices.signOut();
+            });
           },
-        ),
-        const SidebarXItem(
-          icon: Icons.edit_note,
-          label: 'Add User',
-        ),
-        const SidebarXItem(
-          icon: Icons.analytics,
-          label: 'Staff statistics',
         ),
       ],
     );

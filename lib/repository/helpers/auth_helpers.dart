@@ -116,7 +116,7 @@ class AuthHelpers {
   }
 
 
-  static Future<UserRole?> getUserRole(User user) async {
+  static Future<UserRole?> getStaffRole(User user) async {
     UserRole? userRole = await CacheUtils.getUserRoleFromCache();
 
     if (userRole == null) {

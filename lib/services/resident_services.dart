@@ -63,12 +63,12 @@ class ResidentServices {
 
   // Method to fetch resident profile
   static Future<APIResponse<Resident>> fetchResidentProfile({
-    required String nationalId,
+    required String profileEmail,
   }) async {
     try {
       final querySnapshot = await _firestore
           .collection('residents')
-          .where('nationalId', isEqualTo: nationalId)
+          .where('email', isEqualTo: profileEmail)
           .limit(1)
           .get();
 
@@ -87,6 +87,26 @@ class ResidentServices {
           message: 'No resident found with the specified National ID',
         );
       }
+    } catch (e) {
+      return APIResponse(success: false, message: e.toString());
+    }
+  }
+
+  static Future<APIResponse<List<Resident>>> getAllResidents() async {
+    try {
+      // Query Firestore to get all users
+      final querySnapshot = await _firestore.collection('residents').get();
+
+      // Map the query results to UserProfile objects
+      final userList = querySnapshot.docs
+          .map((doc) => Resident.fromJson(doc.data()))
+          .toList();
+
+      return APIResponse(
+        success: true,
+        data: userList,
+        message: 'Users fetched successfully',
+      );
     } catch (e) {
       return APIResponse(success: false, message: e.toString());
     }

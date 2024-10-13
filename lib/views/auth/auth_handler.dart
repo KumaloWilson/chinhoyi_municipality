@@ -29,7 +29,7 @@ class AuthHandler extends ConsumerWidget {
           final user = snapshot.data!;
 
           return FutureBuilder<UserRole?>(
-            future: AuthHelpers.getUserRole(user),
+            future: AuthHelpers.getStaffRole(user),
             builder: (context, roleSnapshot) {
               if (roleSnapshot.connectionState == ConnectionState.waiting) {
                 return Scaffold(

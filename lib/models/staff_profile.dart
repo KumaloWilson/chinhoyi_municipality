@@ -11,6 +11,7 @@ class StaffProfile {
   String email;                       // Email address
   String phoneNumber;                 // Contact number
   String role;                        // Job title or role (e.g., Manager, Clerk, etc.)
+  String post;
   String department;                  // Department the staff belongs to
   DateTime dateOfBirth;              // Staff member's date of birth
   DateTime dateOfHire;               // Date the staff was hired
@@ -25,6 +26,7 @@ class StaffProfile {
     required this.email,
     required this.phoneNumber,
     required this.role,
+    required this.post,
     required this.department,
     required this.dateOfBirth,
     required this.dateOfHire,
@@ -41,6 +43,7 @@ class StaffProfile {
     String? email,
     String? phoneNumber,
     String? role,
+    String? post,
     String? department,
     DateTime? dateOfBirth,
     DateTime? dateOfHire,
@@ -55,6 +58,7 @@ class StaffProfile {
       email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       role: role ?? this.role,
+      post: post ?? this.post,
       department: department ?? this.department,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       dateOfHire: dateOfHire ?? this.dateOfHire,
