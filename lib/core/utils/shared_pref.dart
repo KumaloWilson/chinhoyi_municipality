@@ -17,10 +17,10 @@ class CacheUtils{
 
     if(role.toLowerCase() == 'admin'){
       DevLogs.logInfo(role);
-      return UserRole.admin;
+      return UserRole.staff;
     }else if(role.toLowerCase() == 'user'){
       DevLogs.logInfo(role);
-      return UserRole.user;
+      return UserRole.customer;
     }
 
     return null;

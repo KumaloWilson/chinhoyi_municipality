@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:municipality/views/auth/customer_login_page.dart';
+import 'package:municipality/views/auth/staff_login_page.dart';
 import 'package:municipality/views/splash/splash.dart';
-
 import '../../views/auth/email_verification.dart';
 import '../../views/auth/email_verification_success.dart';
 import '../../views/auth/forgot_password.dart';
-import '../../views/auth/login_page.dart';
 import '../../views/auth/resend_reset_email_screen.dart';
 
 class RoutesHelper {
@@ -14,7 +14,9 @@ class RoutesHelper {
   static String splashScreen = "/splash";
   static String emailVerificationScreen = "/verifyEmail";
   static String successfulVerificationScreen = "/verified";
-  static String loginScreen = '/login';
+  static String staffLoginScreen = '/staffLogin';
+  static String residentLoginScreen = '/residentLogin';
+  static String signUpScreen = '/signUp';
   static String forgotPasswordScreen = '/forgotPassword';
   static String resendVerificationEmailScreen = '/resendVerificationEmail';
   static String adminHomeScreen = '/adminHome';
@@ -43,7 +45,8 @@ class RoutesHelper {
 
           return ResendResetEmailScreen(email: email);
         }),
-    GetPage(name: loginScreen, page: () => const LoginScreen()),
+    GetPage(name: staffLoginScreen, page: () => const StaffLoginScreen()),
+    GetPage(name: residentLoginScreen, page: () => const CustomerLoginScreen()),
     GetPage(
         name: successfulVerificationScreen,
         page: () => const AccountVerificationSuccessful()),

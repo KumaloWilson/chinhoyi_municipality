@@ -9,14 +9,14 @@ import '../../repository/helpers/auth_helpers.dart';
 import '../../widgets/custom_button/general_button.dart';
 import '../../widgets/text_fields/custom_text_field.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -129,14 +129,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: const Text(
                               'Sign in',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12
                               ),
                             ),
                             onTap: ()=> AuthHelpers.validateAndSubmitForm(
-                              email: emailController.text.trim(),
-                              password: passwordController.text.trim()
+                                email: emailController.text.trim(),
+                                password: passwordController.text.trim()
                             )
                         ),
                       ),
@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             textAlign: TextAlign.center,
                             text: TextSpan(
                                 style: const TextStyle(
-                                    fontSize: 12,
+                                  fontSize: 12,
                                 ),
                                 children: [
                                   TextSpan(

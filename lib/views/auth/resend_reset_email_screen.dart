@@ -33,7 +33,7 @@ class ResendResetEmailScreen extends StatelessWidget {
                   onTap: ()async{
                     await AuthServices.signOut().then((value){
                       Get.offAllNamed(
-                        RoutesHelper.loginScreen
+                        RoutesHelper.staffLoginScreen
                       );
                     });
                   },
@@ -118,7 +118,7 @@ class ResendResetEmailScreen extends StatelessWidget {
                       ),
 
                       onTap: () => Get.offAllNamed(
-                          RoutesHelper.loginScreen
+                          RoutesHelper.staffLoginScreen
                       )
                   ),
 

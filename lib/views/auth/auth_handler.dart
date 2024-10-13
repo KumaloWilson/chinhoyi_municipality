@@ -2,12 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:municipality/views/auth/customer_login_page.dart';
 import '../../core/utils/providers.dart';
 import '../../global/global.dart';
 import '../../repository/helpers/auth_helpers.dart';
 import '../sidebarx_feat/pages/main_screen.dart';
-import 'login_page.dart';
-
 class AuthHandler extends ConsumerWidget {
   const AuthHandler({super.key});
 
@@ -65,7 +64,7 @@ class AuthHandler extends ConsumerWidget {
             },
           );
         } else {
-          return const LoginScreen();
+          return const CustomerLoginScreen();
         }
       },
     );

@@ -35,7 +35,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(65),
+        preferredSize: const Size.fromHeight(100),
         child: Container(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -48,7 +48,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     onTap: ()async{
                       await AuthServices.signOut().then((response){
                         if(response.success){
-                          Get.offAllNamed(RoutesHelper.loginScreen);
+                          Get.offAllNamed(RoutesHelper.staffLoginScreen);
                         }else{
                           DevLogs.logError(response.message ?? 'Something went wrong');
                         }

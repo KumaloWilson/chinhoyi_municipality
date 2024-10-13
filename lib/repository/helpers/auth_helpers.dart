@@ -94,7 +94,7 @@ class AuthHelpers {
       barrierDismissible: false,
     );
 
-    await AuthServices.login(
+    await AuthServices.staffLogin(
       emailAddress: email.trim(),
       password: password.trim(),
     ).then((response) {

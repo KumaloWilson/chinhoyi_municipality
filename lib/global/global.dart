@@ -1,5 +1,6 @@
 enum UserRole {
-  user,
+  customer,
+  staff,
   admin
 }
 
