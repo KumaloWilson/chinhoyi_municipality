@@ -9,7 +9,7 @@ part of 'service_request.dart';
 ServiceRequest _$ServiceRequestFromJson(Map<String, dynamic> json) =>
     ServiceRequest(
       requestId: json['requestId'] as String,
-      residentId: json['residentId'] as String,
+      resident: Resident.fromJson(json['resident'] as Map<String, dynamic>),
       description: json['description'] as String,
       category: json['category'] as String,
       requestDate: DateTime.parse(json['requestDate'] as String),
@@ -23,7 +23,7 @@ ServiceRequest _$ServiceRequestFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ServiceRequestToJson(ServiceRequest instance) =>
     <String, dynamic>{
       'requestId': instance.requestId,
-      'residentId': instance.residentId,
+      'resident': instance.resident,
       'description': instance.description,
       'category': instance.category,
       'requestDate': instance.requestDate.toIso8601String(),

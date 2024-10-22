@@ -1,11 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:municipality/models/resident.dart';
 
 part 'service_request.g.dart';
 
 @JsonSerializable()
 class ServiceRequest {
-  final String requestId;          // Unique ID for the service request
-  final String residentId;         // Foreign key linking the request to a resident
+  final String requestId;
+  final Resident resident;         // Foreign key linking the request to a resident
   final String description;        // Description of the issue or service needed
   final String category;           // Category (e.g., Water, Electricity, Waste, Maintenance)
   final DateTime requestDate;      // Date the request was made
@@ -15,7 +16,7 @@ class ServiceRequest {
 
   ServiceRequest({
     required this.requestId,
-    required this.residentId,
+    required this.resident,
     required this.description,
     required this.category,
     required this.requestDate,

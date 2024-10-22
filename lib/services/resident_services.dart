@@ -111,4 +111,5 @@ class ResidentServices {
       return APIResponse(success: false, message: e.toString());
     }
   }
+
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:municipality/views/sidebarx_feat/pages/resident_pages/service_requests.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_residents.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_users.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -24,6 +25,8 @@ class AdminTabScreensContainer extends StatelessWidget {
             return const ManageResidentsScreen();
           case 2:
             return const ManageStaffScreen();
+          case 3:
+            return const ManageServiceRequestsScreen();
           default:
             return Text(
               'Not Found',

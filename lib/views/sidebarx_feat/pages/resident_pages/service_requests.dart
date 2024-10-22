@@ -4,21 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:municipality/core/utils/routes.dart';
-import 'package:municipality/models/resident.dart';
-import 'package:municipality/views/sidebarx_feat/pages/staff_pages/tabs/residents_tab.dart';
+import 'package:municipality/models/service_request.dart';
 import '../../../../core/constants/color_constants.dart';
 import '../../../../core/constants/dimensions.dart';
 import '../../../../core/utils/providers.dart';
 import '../../../../widgets/text_fields/custom_text_field.dart';
+import '../staff_pages/tabs/service_requests.dart';
 
-class ManageResidentsScreen extends ConsumerStatefulWidget {
-  const ManageResidentsScreen({super.key});
+class ManageServiceRequestsScreen extends ConsumerStatefulWidget {
+  const ManageServiceRequestsScreen({super.key});
 
   @override
-  ConsumerState<ManageResidentsScreen> createState() => _ManageResidentsScreenState();
+  ConsumerState<ManageServiceRequestsScreen> createState() => _ManageServiceRequestsScreenState();
 }
 
-class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> with SingleTickerProviderStateMixin {
+class _ManageServiceRequestsScreenState extends ConsumerState<ManageServiceRequestsScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _key = GlobalKey<ScaffoldState>();
   final user = FirebaseAuth.instance.currentUser;
@@ -46,7 +46,7 @@ class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> w
 
   @override
   Widget build(BuildContext context) {
-    final staffState = ref.watch(ProviderUtils.residentsProvider);
+    final requestsState = ref.watch(ProviderUtils.serviceRequestsProvider);
 
     return Scaffold(
       key: _key,
@@ -138,15 +138,15 @@ class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> w
           ),
         ),
       ),
-      body: staffState.when(
-        data: (users) => _buildContent(users),
+      body: requestsState.when(
+        data: (requests) => _buildContent(requests),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text('Error: $error')),
       ),
     );
   }
 
-  Widget _buildContent(List<Resident> users) {
+  Widget _buildContent(List<ServiceRequest> serviceRequests) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -179,12 +179,12 @@ class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> w
           ),
           Expanded(
             child: TabBarView(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               controller: _tabController,
               children: suburbs.map((suburb) {
-                return ResidentTab(
+                return ResidentServicesRequestsTab(
                   searchTerm: searchTerm,
-                  users: users.where((resident) => resident.property.suburb == suburb).toList(),
+                  requests: serviceRequests.where((request) => request.resident.property.suburb == suburb).toList(),
                 );
               }).toList(),
             ),
