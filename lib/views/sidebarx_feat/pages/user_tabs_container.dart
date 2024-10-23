@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:municipality/views/sidebarx_feat/pages/resident_pages/resident_service_requests.dart';
+import 'package:municipality/views/sidebarx_feat/pages/staff_pages/service_requests.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 class UserTabScreensContainer extends StatelessWidget {
@@ -23,7 +25,7 @@ class UserTabScreensContainer extends StatelessWidget {
           case 2:
             return const Center(child: Text('Home Screen 3'),);
           case 3:
-            return const Center(child: Text('Home Screen 4'),);
+            return const ResidentManageServiceRequestsScreen();
           case 4:
             return const Center(child: Text('Home Screen 5'),);
           default:

@@ -30,11 +30,11 @@ class ServiceCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${serviceRequest.resident.lastName} ${serviceRequest.resident.firstName}",
+                    "${serviceRequest.category}",
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "${serviceRequest.resident.property.houseNumber} ${serviceRequest.resident.property.suburb}",
+                    serviceRequest.residentAddress,
                     style:const TextStyle(fontSize: 12),
                   ),
                   Text(

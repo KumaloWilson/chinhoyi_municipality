@@ -7,6 +7,7 @@ import '../../core/utils/providers.dart';
 import '../../global/global.dart';
 import '../../repository/helpers/auth_helpers.dart';
 import '../sidebarx_feat/pages/main_screen.dart';
+
 class AuthHandler extends ConsumerWidget {
   const AuthHandler({super.key});
 

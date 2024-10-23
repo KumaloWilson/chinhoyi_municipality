@@ -5,6 +5,7 @@ import 'package:municipality/models/service_request.dart';
 import 'package:municipality/models/staff_profile.dart';
 import 'package:municipality/state/resident_notifier.dart';
 import 'package:municipality/state/resident_profile_notifier.dart';
+import 'package:municipality/state/service_requests_notifier.dart';
 import 'package:municipality/state/staff_profile_notifier.dart';
 import '../../global/global.dart';
 import '../../services/service_request_services.dart';
@@ -28,15 +29,11 @@ class ProviderUtils {
   });
 
 
-  static final serviceRequestsProvider = StreamProvider.autoDispose<List<ServiceRequest>>((ref) {
-    return ServiceRequestServices.streamAllServiceRequests().map((response) {
-      if (response.success) {
-        return response.data!;
-      } else {
-        throw Exception(response.message ?? 'Something went wrong');
-      }
-    });
+  static final serviceRequestsProvider = StateNotifierProvider<ServiceRequestsNotifier, AsyncValue<List<ServiceRequest>>>(
+  (ref) {
+  return ServiceRequestsNotifier();
   });
+
 
 
   static final staffProfileProvider = StateNotifierProvider.family<StaffProfileNotifier,

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:municipality/models/resident.dart';
 import 'package:municipality/views/auth/customer_login_page.dart';
@@ -9,6 +10,7 @@ import '../../views/auth/email_verification.dart';
 import '../../views/auth/email_verification_success.dart';
 import '../../views/auth/forgot_password.dart';
 import '../../views/auth/resend_reset_email_screen.dart';
+import '../../views/sidebarx_feat/pages/resident_pages/add_service_request.dart';
 import '../../views/sidebarx_feat/pages/staff_pages/add_resident_screen.dart';
 import '../../views/sidebarx_feat/pages/staff_pages/resident_details_screen.dart';
 
@@ -33,7 +35,7 @@ class RoutesHelper {
   static String residentDetailsScreen = '/residentDetails';
   static String updateShiftScreen = '/updateShift';
   static String addResidentsScreen = '/addResidents';
-  static String addUserFeedbackScreen = '/addFeedback';
+  static String addServiceRequestScreen = '/addServiceRequest';
 
   static List<GetPage> routes = [
     GetPage(
@@ -66,5 +68,16 @@ class RoutesHelper {
 
           return ResidentDetailsScreen(resident: resident);
         }),
+
+    GetPage(
+        name: addServiceRequestScreen,
+        page: () {
+          final args = Get.arguments as List;
+
+          final Resident resident = args[0] as Resident;
+          final WidgetRef ref = args[1] as WidgetRef;
+          return AddServiceRequestScreen(resident: resident, ref: ref,);
+        }
+        ),
   ];
 }

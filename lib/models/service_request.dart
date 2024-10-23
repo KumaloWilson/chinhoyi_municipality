@@ -6,7 +6,7 @@ part 'service_request.g.dart';
 @JsonSerializable()
 class ServiceRequest {
   final String requestId;
-  final Resident resident;         // Foreign key linking the request to a resident
+  final String residentAddress;         // Foreign key linking the request to a resident
   final String description;        // Description of the issue or service needed
   final String category;           // Category (e.g., Water, Electricity, Waste, Maintenance)
   final DateTime requestDate;      // Date the request was made
@@ -16,7 +16,7 @@ class ServiceRequest {
 
   ServiceRequest({
     required this.requestId,
-    required this.resident,
+    required this.residentAddress,
     required this.description,
     required this.category,
     required this.requestDate,

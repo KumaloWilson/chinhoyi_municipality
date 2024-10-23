@@ -3,50 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:municipality/core/utils/routes.dart';
 import 'package:municipality/models/service_request.dart';
 import '../../../../core/constants/color_constants.dart';
 import '../../../../core/constants/dimensions.dart';
 import '../../../../core/utils/providers.dart';
+import '../../../../core/utils/routes.dart';
+import '../../../../models/resident.dart';
 import '../../../../widgets/text_fields/custom_text_field.dart';
 import '../staff_pages/tabs/service_requests.dart';
 
-class ManageServiceRequestsScreen extends ConsumerStatefulWidget {
-  const ManageServiceRequestsScreen({super.key});
+class ResidentManageServiceRequestsScreen extends ConsumerStatefulWidget {
+  const ResidentManageServiceRequestsScreen({super.key});
 
   @override
-  ConsumerState<ManageServiceRequestsScreen> createState() => _ManageServiceRequestsScreenState();
+  ConsumerState<ResidentManageServiceRequestsScreen> createState() => _StaffManageServiceRequestsScreenState();
 }
 
-class _ManageServiceRequestsScreenState extends ConsumerState<ManageServiceRequestsScreen> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _StaffManageServiceRequestsScreenState extends ConsumerState<ResidentManageServiceRequestsScreen> with SingleTickerProviderStateMixin {
   final _key = GlobalKey<ScaffoldState>();
   final user = FirebaseAuth.instance.currentUser;
   String searchTerm = '';
   final TextEditingController _searchTextEditingController = TextEditingController();
 
-  final List<String> suburbs = [
-    'Brundish', 'Cherima', 'Chikonohono', 'Chitambo', 'Chikangwe', 'Cold Stream',
-    'Gadzema', 'Gunhill', 'Hunyani', 'Katanda', 'Madzibaba', 'Mapako',
-    'Mhangura', 'Mpata', 'Ngezi', 'Nyamhunga', 'Orange Grove', 'Pfura',
-    'Ruvimbo', 'Rusununguko', 'White City', 'Zvimba', 'Chinhoyi Township',
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: suburbs.length, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     final requestsState = ref.watch(ProviderUtils.serviceRequestsProvider);
+    final residentState = ref.watch(ProviderUtils.residentProfileProvider(user!.email!));
 
     return Scaffold(
       key: _key,
@@ -111,12 +94,13 @@ class _ManageServiceRequestsScreenState extends ConsumerState<ManageServiceReque
                         },
                       ),
                     ),
+
                     const SizedBox(width: 16),
                     Expanded(
                       flex: 1,
                       child: GestureDetector(
                         onTap: () {
-                          Get.toNamed(RoutesHelper.addResidentsScreen);
+                          Get.toNamed(RoutesHelper.addServiceRequestScreen, arguments: [residentState.value, ref]);
                         },
                         child: Container(
                           height: 50,
@@ -125,7 +109,7 @@ class _ManageServiceRequestsScreenState extends ConsumerState<ManageServiceReque
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
-                            FontAwesomeIcons.userPlus,
+                            FontAwesomeIcons.plus,
                             color: Colors.white,
                           ),
                         ),
@@ -139,58 +123,25 @@ class _ManageServiceRequestsScreenState extends ConsumerState<ManageServiceReque
         ),
       ),
       body: requestsState.when(
-        data: (requests) => _buildContent(requests),
+        data: (requests) => residentState.whenData(
+              (resident) => resident != null
+              ? _buildContent(resident: resident, serviceRequests:  requests)
+              : const Center(child: Text('Resident not found')),
+        ).when(
+          data: (widget) => widget,
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Error: $error')),
+        ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text('Error: $error')),
       ),
     );
   }
 
-  Widget _buildContent(List<ServiceRequest> serviceRequests) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Locations',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          TabBar(
-            controller: _tabController,
-            physics: const BouncingScrollPhysics(),
-            isScrollable: true,
-            unselectedLabelStyle: TextStyle(
-              color: Pallete.greyAccent,
-              fontSize: 14,
-            ),
-            labelStyle: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
-            tabAlignment: TabAlignment.start,
-            tabs: suburbs.map((suburb) => Tab(text: suburb)).toList(),
-          ),
-          Expanded(
-            child: TabBarView(
-              physics: const BouncingScrollPhysics(),
-              controller: _tabController,
-              children: suburbs.map((suburb) {
-                return ResidentServicesRequestsTab(
-                  searchTerm: searchTerm,
-                  requests: serviceRequests.where((request) => request.resident.property.suburb == suburb).toList(),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
+  Widget _buildContent({required List<ServiceRequest> serviceRequests, required Resident resident}) {
+    return ResidentServicesRequestsTab(
+      searchTerm: searchTerm,
+      requests: serviceRequests.where((request) => request.residentAddress == "${resident.property.houseNumber} ${resident.property.suburb}").toList()
     );
   }
 }

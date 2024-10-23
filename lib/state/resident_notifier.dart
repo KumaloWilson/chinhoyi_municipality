@@ -6,7 +6,6 @@ class ResidentsNotifier extends StateNotifier<AsyncValue<List<Resident>>> {
     fetchUsers();
   }
 
-  // Fetch users using a one-time get request
   void fetchUsers() async {
     try {
       // Fetch all users from Firestore

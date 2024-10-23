@@ -109,7 +109,7 @@ class Sidebar extends ConsumerWidget {
           icon: FontAwesomeIcons.house,
           label: 'Manage Residents',
         ),
-        if(userRole == UserRole.admin) const SidebarXItem(
+        const SidebarXItem(
           icon: FontAwesomeIcons.users,
           label: 'Manage Staff',
         ),
