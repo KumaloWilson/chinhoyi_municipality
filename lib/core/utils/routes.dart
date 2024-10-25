@@ -61,7 +61,6 @@ class RoutesHelper {
         page: () => const AccountVerificationSuccessful()),
     GetPage(name: forgotPasswordScreen, page: () => ForgotPasswordScreen()),
     GetPage(name: splashScreen, page: () => const SplashScreen()),
-    GetPage(name: addResidentsScreen, page: () => const AddResidentScreen()),
     GetPage(name: addStaffScreen, page: () => const AddStaffScreen()),
     GetPage(
         name: residentDetailsScreen,
@@ -90,5 +89,13 @@ class RoutesHelper {
           return AddAnnouncementScreen(ref: ref);
         }),
 
+
+    GetPage(
+        name: addResidentsScreen,
+        page: () {
+          final WidgetRef ref = Get.arguments as WidgetRef;
+
+          return AddResidentScreen(ref: ref);
+        }),
   ];
 }

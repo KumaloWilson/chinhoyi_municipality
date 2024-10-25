@@ -8,8 +8,8 @@ import '../../core/utils/providers.dart';
 import '../../core/utils/shared_pref.dart';
 import '../../services/auth_service.dart';
 
-class StaffAdminSidebar extends ConsumerWidget {
-  const StaffAdminSidebar({
+class CustomerSidebar extends ConsumerWidget {
+  const CustomerSidebar({
     super.key,
     required SidebarXController controller,
   }) : _controller = controller;
@@ -102,11 +102,11 @@ class StaffAdminSidebar extends ConsumerWidget {
       items: [
         const SidebarXItem(
           icon: Icons.dashboard,
-          label: 'Dashboard',
+          label: 'Home',
         ),
         const SidebarXItem(
           icon: FontAwesomeIcons.house,
-          label: 'Manage Residents',
+          label: 'Dashboard',
         ),
         const SidebarXItem(
           icon: FontAwesomeIcons.users,

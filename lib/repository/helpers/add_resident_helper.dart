@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:municipality/core/utils/providers.dart';
 import 'package:municipality/models/resident.dart';
 import 'package:municipality/services/resident_services.dart';
 
@@ -9,6 +11,7 @@ import '../../widgets/snackbar/custom_snackbar.dart';
 class AddResidentHelper {
   static Future<void> validateAndSubmitForm({
     required Resident resident,
+    required WidgetRef ref,
     String? fileName,
   }) async {
     // Validate Email
@@ -141,6 +144,7 @@ class AddResidentHelper {
         CustomSnackBar.showErrorSnackbar(
             message: response.message ?? 'Something went wrong');
       } else {
+        ref.refresh(ProviderUtils.residentsProvider);
         CustomSnackBar.showSuccessSnackbar(
             message: 'Resident created successfully');
         if (Get.isDialogOpen!) Get.back(closeOverlays: true);

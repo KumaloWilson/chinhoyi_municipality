@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:municipality/views/sidebarx_feat/pages/user_tabs_container.dart';
+import 'package:municipality/widgets/sidebar/customer_sidebar.dart';
 import 'package:sidebarx/sidebarx.dart';
 import '../../../core/constants/dimensions.dart';
 import '../../../global/global.dart';
@@ -21,14 +22,16 @@ class MainScreen extends StatelessWidget {
           key: _key,
           body: Row(
             children: [
-              if (!Dimensions.isSmallScreen) Sidebar(controller: _controller),
+              selectedRole == UserRole.customer
+                  ? CustomerSidebar(controller: _controller)
+                  : StaffAdminSidebar(controller: _controller),
               Expanded(
                 child: Center(
                   child: selectedRole == UserRole.admin
                     ? AdminTabScreensContainer(
                         controller: _controller,
                       )
-                    : UserTabScreensContainer(
+                    : CustomerTabScreensContainer(
                         controller: _controller,
                       ),
                 ),

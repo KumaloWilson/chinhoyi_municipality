@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:municipality/core/constants/color_constants.dart';
 import 'package:municipality/models/resident.dart';
@@ -11,7 +12,8 @@ import 'package:municipality/widgets/custom_dropdown.dart';
 import 'package:municipality/widgets/text_fields/custom_text_field.dart';
 
 class AddResidentScreen extends StatefulWidget {
-  const AddResidentScreen({super.key});
+  final WidgetRef ref;
+  const AddResidentScreen({super.key, required this.ref});
 
   @override
   _AddResidentScreenState createState() => _AddResidentScreenState();
@@ -162,7 +164,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                 lastUpdated: DateTime.now(),
               );
 
-                AddResidentHelper.validateAndSubmitForm(resident: resident);
+                AddResidentHelper.validateAndSubmitForm(resident: resident, ref: widget.ref);
             }
           },
           onStepCancel: () {
