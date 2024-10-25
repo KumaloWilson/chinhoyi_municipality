@@ -45,6 +45,7 @@ dependencies:
   tuple: ^2.0.2
   font_awesome_flutter: ^10.7.0
   fl_chart: ^0.69.0
+  paynow: ^4.0.1
 
 dev_dependencies:
   flutter_test:

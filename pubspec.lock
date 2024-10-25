@@ -781,6 +781,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
+  localregex:
+    dependency: transitive
+    description:
+      name: localregex
+      sha256: a58d6b44f5c61b27a2f2088f596fd04935df3695a17ceb39dc2f33d8d118bbff
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.7"
   logger:
     dependency: "direct main"
     description:
@@ -933,6 +941,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  paynow:
+    dependency: "direct main"
+    description:
+      name: paynow
+      sha256: eac5908b6631698e76c78911ccca97a27d37cf66b3f548c5405b680f69fa59ca
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
   petitparser:
     dependency: transitive
     description:
@@ -981,6 +997,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
+  pretty_dio_logger:
+    dependency: transitive
+    description:
+      name: pretty_dio_logger
+      sha256: "36f2101299786d567869493e2f5731de61ce130faa14679473b26905a92b6407"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   pub_semver:
     dependency: transitive
     description:

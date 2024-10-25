@@ -9,7 +9,7 @@ class Announcement {
   final String description;
   final DateTime date;
   final String category;
-  final String? attachmentUrl;
+  final String? imageUrl;
   final String status;
   final bool isHighPriority;
 
@@ -19,7 +19,7 @@ class Announcement {
     required this.description,
     required this.date,
     required this.category,
-    this.attachmentUrl,
+    this.imageUrl,
     this.status = 'active',
     this.isHighPriority = false,
   });
@@ -48,7 +48,7 @@ class Announcement {
       description: description ?? this.description,
       date: date ?? this.date,
       category: category ?? this.category,
-      attachmentUrl: imageUrl ?? this.attachmentUrl,
+      imageUrl: imageUrl ?? this.imageUrl,
       status: status ?? this.status,
       isHighPriority: isHighPriority ?? this.isHighPriority,
     );

@@ -10,9 +10,8 @@ class MonthlyBalance {
   final double bins;
   final double rates;
   final double sewerage;
-  final double currentBalance; // Total balance including all previous months
+  final double currentBalance;
 
-  // Computed property for current month's total
   double get monthTotal => balanceCarriedForward + bins + rates + sewerage;
 
   MonthlyBalance({

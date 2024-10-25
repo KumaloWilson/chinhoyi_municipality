@@ -147,7 +147,7 @@ class FinancialOverviewCard extends StatelessWidget {
         Expanded(
           child: LineChart(
             LineChartData(
-              gridData: FlGridData(show: true),
+              gridData: const FlGridData(show: true),
               titlesData: FlTitlesData(
                 leftTitles: AxisTitles(
                   sideTitles: SideTitles(
@@ -188,7 +188,7 @@ class FinancialOverviewCard extends StatelessWidget {
                   isCurved: true,
                   color: color,
                   barWidth: 3,
-                  dotData: FlDotData(show: true),
+                  dotData: const FlDotData(show: true),
                 ),
               ],
             ),

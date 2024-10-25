@@ -176,7 +176,7 @@ class ResidentDashboard extends StatelessWidget {
                 LineChartData(
                   gridData: const FlGridData(show: true),
                   titlesData: FlTitlesData(
-                    leftTitles: AxisTitles(
+                    leftTitles: const AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
                         reservedSize: 40,
@@ -209,7 +209,7 @@ class ResidentDashboard extends StatelessWidget {
                       isCurved: true,
                       color: Pallete.primaryColor,
                       barWidth: 3,
-                      dotData: FlDotData(show: true),
+                      dotData: const FlDotData(show: true),
                     ),
                   ],
                 ),
@@ -280,20 +280,5 @@ class ResidentDashboard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'open':
-        return Colors.blue;
-      case 'in progress':
-        return Colors.orange;
-      case 'resolved':
-        return Colors.green;
-      case 'closed':
-        return Colors.grey;
-      default:
-        return Colors.grey;
-    }
   }
 }

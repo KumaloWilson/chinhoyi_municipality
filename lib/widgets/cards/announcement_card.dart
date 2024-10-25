@@ -137,9 +137,9 @@ class AnnouncementCard extends StatelessWidget {
   }
 
   Future<void> _downloadFile() async {
-    if (announcement.attachmentUrl != null) {
+    if (announcement.imageUrl != null) {
       try {
-        final Uri url = Uri.parse(announcement.attachmentUrl!);
+        final Uri url = Uri.parse(announcement.imageUrl!);
         if (await canLaunchUrl(url)) {
           await launchUrl(url);
         } else {
@@ -263,13 +263,13 @@ class AnnouncementCard extends StatelessWidget {
                 ),
               ),
               // Actions
-              if (role == UserRole.admin || announcement.attachmentUrl != null)
+              if (role == UserRole.admin || announcement.imageUrl != null)
                 SizedBox(
                   width: 100,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      if (announcement.attachmentUrl!.isNotEmpty)
+                      if (announcement.imageUrl!.isNotEmpty)
                         IconButton(
                           icon: const Icon(Icons.download),
                           onPressed: _downloadFile,
