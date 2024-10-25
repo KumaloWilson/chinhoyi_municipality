@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:municipality/core/utils/routes.dart';
+import 'package:municipality/global/global.dart';
 import '../../../../core/constants/dimensions.dart';
 import '../../../../widgets/cards/announcement_card.dart';
 import '../../../../widgets/text_fields/custom_text_field.dart';
@@ -22,6 +23,8 @@ class _AnnouncementManagementScreenState extends ConsumerState<AnnouncementManag
 
   @override
   Widget build(BuildContext context) {
+
+    final userRole = ref.watch(ProviderUtils.userRoleProvider);
     final announcementsAsyncValue = ref.watch(ProviderUtils.announcementsProvider);
     final user = FirebaseAuth.instance.currentUser;
 
@@ -89,7 +92,7 @@ class _AnnouncementManagementScreenState extends ConsumerState<AnnouncementManag
                       ),
                     ),
                     const SizedBox(width: 16),
-                    Expanded(
+                    if(userRole == UserRole.admin)Expanded(
                       flex: 1,
                       child: GestureDetector(
                         onTap: () {

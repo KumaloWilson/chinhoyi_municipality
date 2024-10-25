@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:municipality/views/sidebarx_feat/pages/staff_pages/announcements_management.dart';
+import 'package:municipality/views/sidebarx_feat/pages/resident_pages/announcements_management.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/service_requests.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_residents.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_users.dart';
