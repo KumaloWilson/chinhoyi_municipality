@@ -118,13 +118,10 @@ class Sidebar extends ConsumerWidget {
           label: 'Service Requests',
         ),
         const SidebarXItem(
-          icon: Icons.dashboard,
-          label: 'Communication',
+          icon: Icons.notifications_active,
+          label: 'Announcements',
         ),
-        const SidebarXItem(
-          icon: Icons.dashboard,
-          label: 'Notifications',
-        ),
+
         const SidebarXItem(
           icon: Icons.dashboard,
           label: 'Profile',

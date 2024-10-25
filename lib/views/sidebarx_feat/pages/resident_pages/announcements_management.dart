@@ -105,7 +105,7 @@ class _AnnouncementManagementScreenState extends ConsumerState<AnnouncementManag
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
-                            FontAwesomeIcons.plus,
+                            Icons.notification_add,
                             color: Colors.white,
                           ),
                         ),

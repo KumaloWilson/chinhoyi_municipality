@@ -27,11 +27,19 @@ class _StaffLoginScreenState extends State<StaffLoginScreen> {
       body: ListView(
         children: [
           const SizedBox(height: 120),
-          const CircleAvatar(
-            backgroundImage: AssetImage(
-              LocalImageConstants.logo,
-            ),
-            radius: 50,
+          FadeInSlide(
+              duration: 1.0,
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                radius: 150,
+                child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle
+                    ),
+                    child: Image.asset(LocalImageConstants.logo)
+                ),
+              )
           ),
           const SizedBox(
             height: 16,

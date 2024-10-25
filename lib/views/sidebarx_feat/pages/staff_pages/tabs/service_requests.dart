@@ -46,31 +46,34 @@ class _ResidentServicesRequestsTabState extends State<ResidentServicesRequestsTa
       return const Center(child: Text('No Requests found'));
     }
 
-    return Column(
-      children: [
-        TabBar(
-          controller: _tabController,
-          labelColor: Theme.of(context).primaryColor,
-          unselectedLabelColor: Colors.grey,
-          tabs: const [
-            Tab(text: 'Open'),
-            Tab(text: 'In Progress'),
-            Tab(text: 'Resolved'),
-            Tab(text: 'Closed'),
-          ],
-        ),
-        Expanded(
-          child: TabBarView(
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          TabBar(
             controller: _tabController,
-            children: [
-              _buildRequestList('Open'),
-              _buildRequestList('In Progress'),
-              _buildRequestList('Resolved'),
-              _buildRequestList('Closed'),
+            labelColor: Theme.of(context).primaryColor,
+            unselectedLabelColor: Colors.grey,
+            tabs: const [
+              Tab(text: 'Open'),
+              Tab(text: 'In Progress'),
+              Tab(text: 'Resolved'),
+              Tab(text: 'Closed'),
             ],
           ),
-        ),
-      ],
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildRequestList('Open'),
+                _buildRequestList('In Progress'),
+                _buildRequestList('Resolved'),
+                _buildRequestList('Closed'),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
