@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:municipality/models/resident.dart';
 import 'package:municipality/views/auth/customer_login_page.dart';
 import 'package:municipality/views/auth/staff_login_page.dart';
-import 'package:municipality/views/sidebarx_feat/pages/resident_pages/add_announcement_screen.dart';
+import 'package:municipality/views/sidebarx_feat/pages/staff_pages/add_announcement_screen.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/add_user.dart';
 import 'package:municipality/views/splash/splash.dart';
 import '../../views/auth/email_verification.dart';

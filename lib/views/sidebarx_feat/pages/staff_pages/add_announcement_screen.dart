@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:municipality/core/constants/color_constants.dart';
 import 'package:municipality/core/utils/logs.dart';
@@ -24,7 +25,6 @@ class AddAnnouncementScreen extends StatefulWidget {
 class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _fileUrlController = TextEditingController();
 
   String _selectedCategory = 'General';
   DateTime _announcementDate = DateTime.now();
@@ -84,6 +84,16 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    FontAwesomeIcons.newspaper,
+                    size: 100,
+                    color: Pallete.primaryColor,
+                  )
+                ],
+              ),
               _buildSectionTitle('Announcement Details'),
               const SizedBox(height: 16),
               _buildAnnouncementDetails(),
@@ -102,9 +112,9 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                     height: 45,
                     borderRadius: 10,
                     btnColor: Pallete.primaryColor,
-                    child: Text(
+                    child: const Text(
                    'Submit Announcement',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
