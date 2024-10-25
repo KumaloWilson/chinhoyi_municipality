@@ -3,8 +3,3 @@ enum UserRole {
   staff,
   admin
 }
-
-enum FeedbackTag {
-  alpha,
-  hospital
-}

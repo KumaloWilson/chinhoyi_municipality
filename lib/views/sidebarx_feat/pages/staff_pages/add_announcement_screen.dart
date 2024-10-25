@@ -286,7 +286,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
       description: _descriptionController.text,
       date: _announcementDate,
       category: _selectedCategory,
-      imageUrl: '',
+      attachmentUrl: '',
       status: 'active',
       isHighPriority: _isHighPriority,
     );

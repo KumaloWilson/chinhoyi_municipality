@@ -150,6 +150,7 @@ class _AnnouncementManagementScreenState extends ConsumerState<AnnouncementManag
                     final announcement = filteredAnnouncements[index];
                     return AnnouncementCard(
                       announcement: announcement,
+                      role: userRole!,
                     );
                   },
                 );
