@@ -24,13 +24,6 @@ Resident _$ResidentFromJson(Map<String, dynamic> json) => Resident(
           ?.map((e) => MonthlyBalance.fromJson(e as Map<String, dynamic>))
           .toList(),
       accountNumber: json['accountNumber'] as String,
-      paymentMethod: json['paymentMethod'] as String?,
-      paymentHistory: (json['paymentHistory'] as List<dynamic>?)
-          ?.map((e) => PaymentHistory.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      serviceRequests: (json['serviceRequests'] as List<dynamic>?)
-          ?.map((e) => ServiceRequest.fromJson(e as Map<String, dynamic>))
-          .toList(),
       utilityAccounts: (json['utilityAccounts'] as List<dynamic>?)
           ?.map((e) => UtilityAccount.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -61,11 +54,6 @@ Map<String, dynamic> _$ResidentToJson(Resident instance) => <String, dynamic>{
       'property': instance.property.toJson(),
       'familyMembers': instance.familyMembers.map((e) => e.toJson()).toList(),
       'balances': instance.balances?.map((e) => e.toJson()).toList(),
-      'paymentMethod': instance.paymentMethod,
-      'paymentHistory':
-          instance.paymentHistory?.map((e) => e.toJson()).toList(),
-      'serviceRequests':
-          instance.serviceRequests?.map((e) => e.toJson()).toList(),
       'utilityAccounts':
           instance.utilityAccounts?.map((e) => e.toJson()).toList(),
       'employmentStatus': instance.employmentStatus,

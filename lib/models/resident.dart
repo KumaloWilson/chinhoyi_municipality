@@ -32,11 +32,7 @@ class Resident {
 
   // Billing and Payments
   final List<MonthlyBalance>? balances;
-  final String? paymentMethod;
-  final List<PaymentHistory>? paymentHistory;
 
-  // Municipal Services and Requests
-  final List<ServiceRequest>? serviceRequests; // List of service requests or complaints raised by the resident
   final List<UtilityAccount>? utilityAccounts; // Associated accounts for water, electricity, waste, etc.
 
   // Employment and Economic Data (optional)
@@ -71,9 +67,6 @@ class Resident {
     required this.familyMembers,
     this.balances,
     required this.accountNumber,
-    this.paymentMethod,
-    this.paymentHistory,
-    this.serviceRequests,
     this.utilityAccounts,
     required this.employmentStatus,
     required this.employer,
@@ -135,9 +128,6 @@ class Resident {
       property: property ?? this.property,
       familyMembers: familyMembers ?? this.familyMembers,
       balances: balances ?? this.balances,
-      paymentMethod: paymentMethod ?? this.paymentMethod,
-      paymentHistory: paymentHistory ?? this.paymentHistory,
-      serviceRequests: serviceRequests ?? this.serviceRequests,
       utilityAccounts: utilityAccounts ?? this.utilityAccounts,
       employmentStatus: employmentStatus ?? this.employmentStatus,
       employer: employer ?? this.employer,

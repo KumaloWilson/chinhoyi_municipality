@@ -101,16 +101,16 @@ class CustomerSidebar extends ConsumerWidget {
       },
       items: [
         const SidebarXItem(
-          icon: Icons.dashboard,
+          icon: FontAwesomeIcons.house,
           label: 'Home',
         ),
         const SidebarXItem(
-          icon: FontAwesomeIcons.house,
+          icon: Icons.dashboard,
           label: 'Dashboard',
         ),
         const SidebarXItem(
           icon: FontAwesomeIcons.users,
-          label: 'Manage Staff',
+          label: 'My Residence',
         ),
         const SidebarXItem(
           icon: Icons.dashboard,

@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:municipality/models/resident.dart';
 
 part 'service_request.g.dart';
 

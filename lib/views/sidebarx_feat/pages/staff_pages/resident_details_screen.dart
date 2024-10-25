@@ -44,7 +44,7 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
             _buildInfoCard(
               'General Information',[
                 _buildInfoRow('Account Number', widget.resident.accountNumber),
-                if(widget.resident.balances!.isNotEmpty)_buildInfoRow('Current Balance', widget.resident.balances!.last.balance.toString())
+                if(widget.resident.balances!.isNotEmpty)_buildInfoRow('Current Balance', widget.resident.balances!.last.currentBalance.toString())
             ]
 
             ),
@@ -77,7 +77,6 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
                   _buildFamilyTab(),
                   _buildPropertyTab(),
                   _buildUtilitiesTab(),
-                  _buildPaymentsTab(),
                 ],
               ),
             ),
@@ -203,73 +202,7 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
     );
   }
 
-  Widget _buildPaymentsTab() {
-    return Column(
-      children: [
-        Expanded(
-          flex: 2,
-          child: _buildPaymentHistoryChart(),
-        ),
-        Expanded(
-          flex: 3,
-          child: _buildPaymentHistoryList(),
-        ),
-      ],
-    );
-  }
 
-  Widget _buildPaymentHistoryChart() {
-    final paymentHistory = widget.resident.paymentHistory ?? [];
-    if (paymentHistory.isEmpty) {
-      return const Center(child: Text('No payment history available'));
-    }
-
-    final sortedPayments = paymentHistory..sort((a, b) => a.paymentDate.compareTo(b.paymentDate));
-    final spots = sortedPayments.asMap().entries.map((entry) {
-      return FlSpot(entry.key.toDouble(), entry.value.amount);
-    }).toList();
-
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: LineChart(
-        LineChartData(
-          gridData: const FlGridData(show: false),
-          titlesData: const FlTitlesData(show: false),
-          borderData: FlBorderData(show: true),
-          minX: 0,
-          maxX: spots.length.toDouble() - 1,
-          minY: 0,
-          maxY: spots.map((spot) => spot.y).reduce((max, value) => value > max ? value : max),
-          lineBarsData: [
-            LineChartBarData(
-              spots: spots,
-              isCurved: true,
-              color: Colors.blue,
-              barWidth: 3,
-              isStrokeCapRound: true,
-              dotData: const FlDotData(show: false),
-              belowBarData: BarAreaData(show: true, color: Colors.blue.withOpacity(0.3)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPaymentHistoryList() {
-    final paymentHistory = widget.resident.paymentHistory ?? [];
-    return ListView.builder(
-      itemCount: paymentHistory.length,
-      itemBuilder: (context, index) {
-        final payment = paymentHistory[index];
-        return ListTile(
-          title: Text('\$${payment.amount.toStringAsFixed(2)}'),
-          subtitle: Text(DateFormat('yyyy-MM-dd').format(payment.paymentDate)),
-          trailing: Text(payment.status),
-        );
-      },
-    );
-  }
 
   Widget _buildInfoCard(String title, List<Widget> children) {
     return Card(

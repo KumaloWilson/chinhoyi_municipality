@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/announcements_management.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/home_page.dart';
+import 'package:municipality/views/sidebarx_feat/pages/resident_pages/my_residence_management.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/resident_service_requests.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/service_requests.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -25,7 +26,7 @@ class CustomerTabScreensContainer extends StatelessWidget {
           case 1:
             return const Center(child: Text('Home Screen 2'),);
           case 2:
-            return const Center(child: Text('Home Screen 3'),);
+            return const MyResidenceManagementScreen();
           case 3:
             return const ResidentManageServiceRequestsScreen();
           case 4:

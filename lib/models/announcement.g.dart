@@ -12,7 +12,7 @@ Announcement _$AnnouncementFromJson(Map<String, dynamic> json) => Announcement(
       description: json['description'] as String,
       date: DateTime.parse(json['date'] as String),
       category: json['category'] as String,
-      attachmentUrl: json['imageUrl'] as String?,
+      attachmentUrl: json['attachmentUrl'] as String?,
       status: json['status'] as String? ?? 'active',
       isHighPriority: json['isHighPriority'] as bool? ?? false,
     );
@@ -24,7 +24,7 @@ Map<String, dynamic> _$AnnouncementToJson(Announcement instance) =>
       'description': instance.description,
       'date': instance.date.toIso8601String(),
       'category': instance.category,
-      'imageUrl': instance.attachmentUrl,
+      'attachmentUrl': instance.attachmentUrl,
       'status': instance.status,
       'isHighPriority': instance.isHighPriority,
     };
