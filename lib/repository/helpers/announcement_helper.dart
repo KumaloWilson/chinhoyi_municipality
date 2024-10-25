@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:municipality/core/utils/api_response.dart';
 import '../../models/announcement.dart';
 import '../../services/communication_services.dart';
 import '../../widgets/circular_loader/circular_loader.dart';
@@ -13,8 +15,9 @@ class AddAnnouncementHelper {
     required Announcement announcement,
     required WidgetRef ref,
     required String? fileName,
+    required Uint8List? fileBytes,
     required File? file,
-    required User user
+    required User user,
   }) async {
     if (announcement.title.isEmpty) {
       CustomSnackBar.showErrorSnackbar(message: 'Please input a title');
@@ -40,24 +43,34 @@ class AddAnnouncementHelper {
 
     Announcement updatedAnnouncement = announcement;
 
-    if(file != null){
-      final uploadResponse = await AnnouncementServices.uploadFileToFirebase(
-          file: file,
+    // Handle file upload for both web and mobile platforms
+    if (file != null || fileBytes != null) {
+      final APIResponse uploadResponse;
+
+      if (GetPlatform.isWeb) {
+        // Web platform file upload (using fileBytes)
+        uploadResponse = await AnnouncementServices.uploadFileToFirebaseWeb(
+          fileBytes: fileBytes!,
           fileName: fileName!,
-          user: user
-      );
+          user: user,
+        );
+      } else {
+        // Mobile platform file upload (using File)
+        uploadResponse = await AnnouncementServices.uploadFileToFirebase(
+          file: file!,
+          fileName: fileName!,
+          user: user,
+        );
+      }
 
       if (!uploadResponse.success) {
         Get.back();
-        CustomSnackBar.showErrorSnackbar(message: 'Error :${uploadResponse.message}');
+        CustomSnackBar.showErrorSnackbar(message: 'Error: ${uploadResponse.message}');
         return;
-      }else{
-        updatedAnnouncement = announcement.copyWith(
-          imageUrl: uploadResponse.data
-        );
+      } else {
+        updatedAnnouncement = announcement.copyWith(imageUrl: uploadResponse.data);
       }
     }
-
 
     await AnnouncementServices.addAnnouncement(
       announcement: updatedAnnouncement,
@@ -65,17 +78,14 @@ class AddAnnouncementHelper {
     ).then((response) {
       if (!response.success) {
         if (!Get.isSnackbarOpen) Get.back();
-        CustomSnackBar.showErrorSnackbar(
-            message: response.message ?? 'Something went wrong'
-        );
+        CustomSnackBar.showErrorSnackbar(message: response.message ?? 'Something went wrong');
       } else {
-        CustomSnackBar.showSuccessSnackbar(
-            message: 'Announcement submitted successfully'
-        );
+        CustomSnackBar.showSuccessSnackbar(message: 'Announcement submitted successfully');
         if (Get.isDialogOpen!) Get.back(closeOverlays: true);
       }
     });
   }
+
 
   static Future validateAndUpdateAnnouncement({
     required Announcement announcement,

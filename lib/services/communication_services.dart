@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:municipality/core/utils/providers.dart';
 import '../core/utils/api_response.dart';
@@ -84,6 +85,64 @@ class AnnouncementServices {
       return APIResponse(success: true, message: 'Announcement updated successfully');
     } catch (e) {
       return APIResponse(success: false, message: 'Update failed: $e');
+    }
+  }
+
+  static Future<APIResponse<String>> uploadFileToFirebaseWeb({
+    required Uint8List fileBytes,
+    required String fileName,
+    required User user,
+  }) async {
+    try {
+      final storage = FirebaseStorage.instance;
+      final String path = 'documents/${user.uid}/$fileName';
+
+      // Create a reference to the file location in Firebase Storage
+      final Reference storageRef = storage.ref().child(path);
+
+      // Check if the file already exists by attempting to get its download URL
+      try {
+        final existingUrl = await storageRef.getDownloadURL();
+        if (existingUrl.isNotEmpty) {
+          return APIResponse(
+            message: 'File already exists',
+            success: true,
+            data: existingUrl,
+          );
+        }
+      } catch (e) {
+        // If the file doesn't exist, Firebase throws an error, and we'll catch it and proceed with upload.
+        DevLogs.logInfo('File does not exist. Proceeding to upload.');
+      }
+
+      // Proceed to upload the file to Firebase Storage (for web we use `putData`)
+      UploadTask uploadTask = storageRef.putData(fileBytes);
+      TaskSnapshot snapshot = await uploadTask.whenComplete(() {});
+
+      // Retrieve the public URL of the uploaded file
+      final String downloadUrl = await snapshot.ref.getDownloadURL();
+
+      return APIResponse(
+        message: 'Document Upload Successful',
+        success: true,
+        data: downloadUrl,
+      );
+    } on FirebaseException catch (e) {
+      // Handle Firebase-specific exceptions
+      DevLogs.logError('Firebase Storage Exception: ${e.message}, Code: ${e.code}');
+      return APIResponse(
+        message: 'Upload failed: ${e.message}',
+        success: false,
+        data: null,
+      );
+    } catch (e) {
+      // Handle any other errors
+      DevLogs.logError('Error uploading file: $e');
+      return APIResponse(
+        message: 'Document Upload Failed',
+        success: false,
+        data: null,
+      );
     }
   }
 

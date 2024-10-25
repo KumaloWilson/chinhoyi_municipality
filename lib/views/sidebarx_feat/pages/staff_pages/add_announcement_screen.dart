@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:municipality/core/constants/color_constants.dart';
 import 'package:municipality/core/utils/logs.dart';
@@ -32,6 +34,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
 
   File? _selectedFile;
   String? _fileName;
+  Uint8List? _selectedFileBytes;
   final user = FirebaseAuth.instance.currentUser;
 
   final List<String> _categories = [
@@ -290,6 +293,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
 
     AddAnnouncementHelper.validateAndSubmitAnnouncement(
       file: _selectedFile,
+      fileBytes: _selectedFileBytes,
       fileName: _fileName,
       announcement: announcement,
       ref: widget.ref,
@@ -305,14 +309,24 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
       );
 
       if (result != null) {
-        setState(() {
-          _selectedFile = File(result.files.single.path!);
-          _fileName = result.files.single.name;
-        });
+        if (GetPlatform.isWeb) {
+          // Web platform, use bytes instead of path
+          setState(() {
+            _selectedFileBytes = result.files.single.bytes; // Get file bytes
+            _fileName = result.files.single.name; // Get file name
+          });
+        } else {
+          // Mobile platforms, use path
+          setState(() {
+            _selectedFile = File(result.files.single.path!); // Get file path
+            _fileName = result.files.single.name; // Get file name
+          });
+        }
       }
     } catch (e) {
       DevLogs.logError('Error picking file: $e');
       CustomSnackBar.showErrorSnackbar(message: e.toString());
     }
   }
+
 }
