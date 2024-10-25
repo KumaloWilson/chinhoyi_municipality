@@ -8,9 +8,12 @@ import 'package:municipality/state/resident_profile_notifier.dart';
 import 'package:municipality/state/service_requests_notifier.dart';
 import 'package:municipality/state/staff_profile_notifier.dart';
 import '../../global/global.dart';
+import '../../models/announcement.dart';
+import '../../services/communication_services.dart';
 import '../../services/service_request_services.dart';
 import '../../state/authentication_provider.dart';
 import '../../state/staff_notifier.dart';
+import 'api_response.dart';
 
 class ProviderUtils {
   static final userProvider = StateNotifierProvider<UserNotifier, User?>((ref) {
@@ -49,5 +52,9 @@ class ProviderUtils {
 
   static final userRoleProvider = StateProvider<UserRole?>((ref) {
     return null;
+  });
+
+  static final announcementsProvider = StreamProvider<APIResponse<List<Announcement>>>((ref) {
+    return AnnouncementServices.streamAnnouncements();
   });
 }

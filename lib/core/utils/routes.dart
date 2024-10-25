@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:municipality/models/resident.dart';
 import 'package:municipality/views/auth/customer_login_page.dart';
 import 'package:municipality/views/auth/staff_login_page.dart';
+import 'package:municipality/views/sidebarx_feat/pages/resident_pages/add_announcement_screen.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/add_user.dart';
 import 'package:municipality/views/splash/splash.dart';
 import '../../views/auth/email_verification.dart';
@@ -36,6 +37,7 @@ class RoutesHelper {
   static String updateShiftScreen = '/updateShift';
   static String addResidentsScreen = '/addResidents';
   static String addServiceRequestScreen = '/addServiceRequest';
+  static String addAnnouncementScreen = '/addAnnouncement';
 
   static List<GetPage> routes = [
     GetPage(
@@ -79,5 +81,14 @@ class RoutesHelper {
           return AddServiceRequestScreen(resident: resident, ref: ref,);
         }
         ),
+
+    GetPage(
+        name: addAnnouncementScreen,
+        page: () {
+          final WidgetRef ref = Get.arguments as WidgetRef;
+
+          return AddAnnouncementScreen(ref: ref);
+        }),
+
   ];
 }
