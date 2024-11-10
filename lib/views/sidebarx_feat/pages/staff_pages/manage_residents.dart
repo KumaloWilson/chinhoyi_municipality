@@ -46,7 +46,7 @@ class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> w
 
   @override
   Widget build(BuildContext context) {
-    final staffState = ref.watch(ProviderUtils.residentsProvider);
+    final residentsState = ref.watch(ProviderUtils.residentsProvider);
 
     return Scaffold(
       key: _key,
@@ -138,7 +138,7 @@ class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> w
           ),
         ),
       ),
-      body: staffState.when(
+      body: residentsState.when(
         data: (users) => _buildContent(users),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text('Error: $error')),

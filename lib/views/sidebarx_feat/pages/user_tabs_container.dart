@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/announcements_management.dart';
+import 'package:municipality/views/sidebarx_feat/pages/resident_pages/dashboard.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/home_page.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/my_residence_management.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/resident_service_requests.dart';
@@ -24,7 +25,7 @@ class CustomerTabScreensContainer extends StatelessWidget {
           case 0:
             return const ChinhoyiMunicipalityScreen();
           case 1:
-            return const Center(child: Text('Home Screen 2'),);
+            return const CustomerDashBoard();
           case 2:
             return const MyResidenceManagementScreen();
           case 3:

@@ -46,6 +46,7 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   fl_chart: ^0.69.0
   paynow: ^4.0.1
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
