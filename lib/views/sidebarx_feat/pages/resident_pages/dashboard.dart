@@ -8,6 +8,9 @@ import 'package:municipality/widgets/placeholders/dashboard.dart';
 import '../../../../core/constants/color_constants.dart';
 import '../../../../core/utils/providers.dart';
 
+
+
+
 class CustomerDashBoard extends ConsumerStatefulWidget {
   const CustomerDashBoard({super.key});
 
@@ -31,7 +34,10 @@ class _CustomerDashBoardState extends ConsumerState<CustomerDashBoard> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Customer Dashboard',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white
+          ),
         ),
       ),
       body: residentState.when(
@@ -124,6 +130,8 @@ class _CustomerDashBoardState extends ConsumerState<CustomerDashBoard> {
     );
   }
 
+
+
   Widget _buildCard({required Widget child}) {
     return Card(
       elevation: 8,
@@ -199,9 +207,9 @@ class _CustomerDashBoardState extends ConsumerState<CustomerDashBoard> {
                 LineChartBarData(
                   spots: waterUsage.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList(),
                   isCurved: true,
-                  gradient: LinearGradient(colors: [Colors.blue, Colors.purple]),
+                  gradient: const LinearGradient(colors: [Colors.blue, Colors.purple]),
                   belowBarData: BarAreaData(show: true, gradient: LinearGradient(colors: [Colors.blue.withOpacity(0.3), Colors.purple.withOpacity(0.1)])),
-                  dotData: FlDotData(show: false),
+                  dotData: const FlDotData(show: false),
                   barWidth: 4,
                 ),
               ],
@@ -228,7 +236,14 @@ class _CustomerDashBoardState extends ConsumerState<CustomerDashBoard> {
                   barRods: [
                     BarChartRodData(
                       toY: e.value,
-                      gradient: LinearGradient(colors: [Colors.blueAccent, Colors.lightBlueAccent]),
+                      gradient: LinearGradient(
+                          colors: [
+                            Pallete.primaryColor,
+                            Pallete.primaryColor.withOpacity(
+                              0.6
+                            )
+                          ]
+                      ),
                       width: 16,
                       borderRadius: BorderRadius.circular(4),
                     ),

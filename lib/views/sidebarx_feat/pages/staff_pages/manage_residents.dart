@@ -116,7 +116,7 @@ class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> w
                       flex: 1,
                       child: GestureDetector(
                         onTap: () {
-                          Get.toNamed(RoutesHelper.addResidentsScreen);
+                          Get.toNamed(RoutesHelper.addResidentsScreen, arguments: ref);
                         },
                         child: Container(
                           height: 50,

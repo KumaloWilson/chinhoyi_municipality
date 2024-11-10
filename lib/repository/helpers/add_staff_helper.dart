@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:get/get_utils/src/get_utils/get_utils.dart';
+import 'package:municipality/core/utils/providers.dart';
 import 'package:municipality/models/staff_profile.dart';
 import '../../services/staff_services.dart';
 import '../../widgets/circular_loader/circular_loader.dart';
@@ -9,6 +11,7 @@ import '../../widgets/snackbar/custom_snackbar.dart';
 class AddUserHelper {
   static Future<void> validateAndSubmitForm({
     required StaffProfile userProfile,
+    required WidgetRef ref
   }) async {
     // Validate all required fields before proceeding
     if (!_validateUserProfile(userProfile)) return;
@@ -31,6 +34,8 @@ class AddUserHelper {
         if (Get.isDialogOpen!) Get.back(closeOverlays: true);
         CustomSnackBar.showSuccessSnackbar(
             message: 'User account created successfully.');
+
+        ref.refresh(ProviderUtils.staffProvider);
       }
     });
   }

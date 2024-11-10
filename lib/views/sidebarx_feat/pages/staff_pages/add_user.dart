@@ -261,6 +261,7 @@ class _AdminAddStaffState extends ConsumerState<AddStaffScreen> {
               child: GeneralButton(
                 onTap: () async {
                   AddUserHelper.validateAndSubmitForm(
+                    ref: ref,
                     userProfile: StaffProfile(
                       staffId: '',
                       firstName: firstNameController.text.trim(),
