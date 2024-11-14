@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:municipality/models/resident.dart';
 import 'package:municipality/views/auth/customer_login_page.dart';
+import 'package:municipality/views/auth/signup.dart';
 import 'package:municipality/views/auth/staff_login_page.dart';
+import 'package:municipality/views/auth/staff_sign_up.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/add_announcement_screen.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/add_user.dart';
 import 'package:municipality/views/splash/splash.dart';
@@ -22,8 +24,9 @@ class RoutesHelper {
   static String emailVerificationScreen = "/verifyEmail";
   static String successfulVerificationScreen = "/verified";
   static String staffLoginScreen = '/staffLogin';
+  static String staffSignUpScreen = '/staffSignUp';
   static String residentLoginScreen = '/residentLogin';
-  static String signUpScreen = '/signUp';
+  static String residentSignUpScreen = '/residentSignUp';
   static String forgotPasswordScreen = '/forgotPassword';
   static String resendVerificationEmailScreen = '/resendVerificationEmail';
   static String adminHomeScreen = '/adminHome';
@@ -55,7 +58,9 @@ class RoutesHelper {
           return ResendResetEmailScreen(email: email);
         }),
     GetPage(name: staffLoginScreen, page: () => const StaffLoginScreen()),
+    GetPage(name: staffSignUpScreen, page: () => const StaffSignUpScreen()),
     GetPage(name: residentLoginScreen, page: () => const CustomerLoginScreen()),
+    GetPage(name: residentSignUpScreen, page: () => const CustomerSignUpScreen()),
     GetPage(
         name: successfulVerificationScreen,
         page: () => const AccountVerificationSuccessful()),

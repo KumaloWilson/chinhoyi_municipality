@@ -134,7 +134,7 @@ class _StaffLoginScreenState extends State<StaffLoginScreen> {
                                 fontSize: 12
                             ),
                           ),
-                          onTap: ()=> AuthHelpers.staffValidateAndSubmitForm(
+                          onTap: ()=> AuthHelpers.staffValidateAndSubmitLoginForm(
                               email: emailController.text.trim(),
                               password: passwordController.text.trim()
                           )
@@ -250,7 +250,7 @@ class _StaffLoginScreenState extends State<StaffLoginScreen> {
           FadeInSlide(
             duration: 2.4,
             child: GestureDetector(
-              onTap: () => Get.toNamed(RoutesHelper.signUpScreen),
+              onTap: () => Get.toNamed(RoutesHelper.staffSignUpScreen),
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(

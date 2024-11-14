@@ -68,7 +68,7 @@ class AuthHelpers {
     }
   }
 
-  static void customerValidateAndSubmitForm({
+  static void customerLoginValidateAndSubmitForm({
     required String password,
     required String email,
     required UserRole userRole
@@ -115,7 +115,82 @@ class AuthHelpers {
     });
   }
 
-  static void staffValidateAndSubmitForm({
+  static void customerSignUpValidateAndSubmitForm({
+    required String nationalID,
+    required String email,
+    required String password,
+    required String confirmPassword,
+    required String houseNumber,
+    required String suburb,
+  }) async {
+    // Validate National ID
+    if (nationalID.isEmpty) {
+      CustomSnackBar.showErrorSnackbar(message: 'National ID is required.');
+      return;
+    }
+
+    // Validate Email
+    if (!GetUtils.isEmail(email)) {
+      CustomSnackBar.showErrorSnackbar(message: 'Please input a valid email');
+      return;
+    }
+
+    // Validate House Number
+    if (houseNumber.isEmpty) {
+      CustomSnackBar.showErrorSnackbar(message: 'House number is required.');
+      return;
+    }
+
+    // Validate Suburb
+    if (suburb.isEmpty) {
+      CustomSnackBar.showErrorSnackbar(message: 'Suburb is required.');
+      return;
+    }
+
+    // Validate Password
+    if (password.isEmpty) {
+      CustomSnackBar.showErrorSnackbar(message: 'Password is required.');
+      return;
+    }
+
+    if (password.length < 8) {
+      CustomSnackBar.showErrorSnackbar(message: 'Password must be at least 8 characters.');
+      return;
+    }
+
+    // Validate Confirm Password
+    if (confirmPassword != password) {
+      CustomSnackBar.showErrorSnackbar(message: 'Passwords do not match.');
+      return;
+    }
+
+    Get.dialog(
+      const CustomLoader(
+        message: 'Creating account...',
+      ),
+      barrierDismissible: false,
+    );
+
+    await AuthServices.residentSignUp(
+      emailAddress: email.trim(),
+      password: password.trim(),
+      nationalId: nationalID.trim(),
+      houseNumber: houseNumber.trim(),
+      suburb: suburb.trim(),
+    ).then((response) {
+      if (!response.success) {
+        if (!Get.isSnackbarOpen) Get.back();
+        CustomSnackBar.showErrorSnackbar(message: response.message ?? 'Something went wrong');
+      } else {
+        if (Get.isDialogOpen!) Get.back();
+        CustomSnackBar.showSuccessSnackbar(message: 'Account created successfully');
+        Get.offAllNamed(RoutesHelper.initialScreen);
+      }
+    });
+  }
+
+
+  static void staffValidateAndSubmitLoginForm({
     required String password,
     required String email,
   }) async {
@@ -144,6 +219,68 @@ class AuthHelpers {
     await AuthServices.staffLogin(
       emailAddress: email.trim(),
       password: password.trim(),
+    ).then((response) {
+      if (!response.success && response.message != 'No user found for that email.') {
+        if (!Get.isSnackbarOpen) Get.back();
+        CustomSnackBar.showErrorSnackbar(message: response.message ?? 'Something went wrong');
+      } else if (!response.success && response.message == 'No user found for that email.') {
+        if (!Get.isSnackbarOpen) Get.back();
+        CustomSnackBar.showErrorSnackbar(message: response.message ?? 'Something went wrong',);
+      } else {
+        if (Get.isDialogOpen!) Get.back();
+
+        // Show success snackbar
+
+        CustomSnackBar.showSuccessSnackbar(message: 'Login Successful',);
+        Get.offAllNamed(RoutesHelper.initialScreen);
+      }
+    });
+  }
+
+
+  static void staffValidateAndSubmitSignUpForm({
+    required String password,
+    required String confirmPassword,
+    required String email,
+    required String phoneNumber
+  }) async {
+    if (password.isEmpty) {
+      CustomSnackBar.showErrorSnackbar(message: 'Password is required.');
+      return;
+    }
+
+    if (phoneNumber.isEmpty) {
+      CustomSnackBar.showErrorSnackbar(message: 'Phone Number is required.');
+      return;
+    }
+
+    if (confirmPassword != password) {
+      CustomSnackBar.showErrorSnackbar(message: 'Passwords don`t match');
+      return;
+    }
+
+    if (password.length < 8) {
+      CustomSnackBar.showErrorSnackbar(message: 'Password too Short');
+      return;
+    }
+
+    if (!GetUtils.isEmail(email)) {
+      CustomSnackBar.showErrorSnackbar(message: 'Please input a valid email');
+      return;
+    }
+
+
+    Get.dialog(
+      const CustomLoader(
+        message: 'Creating User Account',
+      ),
+      barrierDismissible: false,
+    );
+
+    await AuthServices.staffSignUp(
+      emailAddress: email.trim(),
+      password: password.trim(),
+      phoneNumber: phoneNumber
     ).then((response) {
       if (!response.success && response.message != 'No user found for that email.') {
         if (!Get.isSnackbarOpen) Get.back();
