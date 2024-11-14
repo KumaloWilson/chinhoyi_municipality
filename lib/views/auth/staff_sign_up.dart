@@ -7,50 +7,21 @@ import '../../core/constants/color_constants.dart';
 import '../../core/utils/routes.dart';
 import '../../repository/helpers/auth_helpers.dart';
 import '../../widgets/custom_button/general_button.dart';
-import '../../widgets/custom_dropdown.dart';
 import '../../widgets/text_fields/custom_text_field.dart';
 
-class CustomerSignUpScreen extends StatefulWidget {
-  const CustomerSignUpScreen({super.key});
+class StaffSignUpScreen extends StatefulWidget {
+  const StaffSignUpScreen({super.key});
 
   @override
-  State<CustomerSignUpScreen> createState() => _CustomerSignUpScreenState();
+  State<StaffSignUpScreen> createState() => _StaffSignUpScreenState();
 }
 
-class _CustomerSignUpScreenState extends State<CustomerSignUpScreen> {
+class _StaffSignUpScreenState extends State<StaffSignUpScreen> {
 
-  List<String> suburbs = [
-    'Brundish',
-    'Cherima',
-    'Chikonohono',
-    'Chitambo',
-    'Chikangwe',
-    'Cold Stream',
-    'Gadzema',
-    'Gunhill',
-    'Hunyani',
-    'Katanda',
-    'Madzibaba',
-    'Mapako',
-    'Mhangura',
-    'Mpata',
-    'Ngezi',
-    'Nyamhunga',
-    'Orange Grove',
-    'Pfura',
-    'Ruvimbo',
-    'Rusununguko',
-    'White City',
-    'Zvimba',
-    'Chinhoyi Township',
-  ];
-  
-  final nationalIDNumber = TextEditingController();
-  final houseNumber = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final phoneNumberController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  String _selectedSuburb = 'Cold Stream';
 
   @override
   Widget build(BuildContext context) {
@@ -108,13 +79,12 @@ class _CustomerSignUpScreenState extends State<CustomerSignUpScreen> {
                     ),
                   ],
                 ),
-
                 child: Column(
                   children: [
                     const FadeInSlide(
-                      duration: 1.0,
+                      duration: 1.2,
                       child: Text(
-                        'Residence Registration',
+                        'Staff Sign Up',
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold),
@@ -124,21 +94,7 @@ class _CustomerSignUpScreenState extends State<CustomerSignUpScreen> {
                       height: 8,
                     ),
                     FadeInSlide(
-                      duration: 1.2,
-                      child: CustomTextField(
-                        controller: nationalIDNumber,
-                        labelText: 'National ID Number',
-                        prefixIcon: const Icon(
-                          Icons.person,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    FadeInSlide(
-                      duration: 1.2,
+                      duration: 1.4,
                       child: CustomTextField(
                         controller: emailController,
                         labelText: 'Email Address',
@@ -152,36 +108,21 @@ class _CustomerSignUpScreenState extends State<CustomerSignUpScreen> {
                       height: 8,
                     ),
                     FadeInSlide(
-                      duration: 1.6,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              controller: houseNumber,
-                              labelText: 'House Number',
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: CustomDropDown(
-                              items: suburbs,
-                              selectedValue: _selectedSuburb,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedSuburb = value!;
-                                });
-                              },
-                              isEnabled: true,
-                            ),
-                          ),
-                        ],
+                      duration: 1.5,
+                      child: CustomTextField(
+                        controller: phoneNumberController,
+                        labelText: 'Phone Number',
+                        prefixIcon: const Icon(
+                          Icons.email_outlined,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                     const SizedBox(
                       height: 8,
                     ),
                     FadeInSlide(
-                      duration: 1.8,
+                      duration: 1.6,
                       child: CustomTextField(
                         controller: passwordController,
                         obscureText: true,
@@ -192,24 +133,21 @@ class _CustomerSignUpScreenState extends State<CustomerSignUpScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(
                       height: 8,
                     ),
                     FadeInSlide(
-                      duration: 2,
+                      duration: 1.7,
                       child: CustomTextField(
                         controller: confirmPasswordController,
                         obscureText: true,
-                        labelText: 'Confirm password',
+                        labelText: 'Confirm',
                         prefixIcon: const Icon(
                           Icons.lock,
                           color: Colors.grey,
                         ),
                       ),
                     ),
-
-
                     const SizedBox(
                       height: 24,
                     ),
@@ -220,20 +158,18 @@ class _CustomerSignUpScreenState extends State<CustomerSignUpScreen> {
                           width: Dimensions.screenWidth,
                           borderRadius: 10,
                           child: const Text(
-                            'Register Account',
+                            'Register',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12
                             ),
                           ),
-                          onTap: ()=> AuthHelpers.customerSignUpValidateAndSubmitForm(
-                            nationalID: nationalIDNumber.text.trim(),
-                            confirmPassword: confirmPasswordController.text.trim(),
-                            houseNumber: houseNumber.text.trim(),
-                            suburb: _selectedSuburb,
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
+                          onTap: ()=> AuthHelpers.staffValidateAndSubmitSignUpForm(
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
+                            phoneNumber: phoneNumberController.text.trim(),
+                            confirmPassword: confirmPasswordController.text.trim()
                           )
                       ),
                     ),
@@ -248,6 +184,8 @@ class _CustomerSignUpScreenState extends State<CustomerSignUpScreen> {
             ],
           ),
 
+
+
           const SizedBox(
             height: 20,
           ),
@@ -258,7 +196,7 @@ class _CustomerSignUpScreenState extends State<CustomerSignUpScreen> {
           FadeInSlide(
             duration: 2.4,
             child: GestureDetector(
-              onTap: () => Get.toNamed(RoutesHelper.residentLoginScreen),
+              onTap: () => Get.toNamed(RoutesHelper.staffLoginScreen),
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
@@ -285,9 +223,16 @@ class _CustomerSignUpScreenState extends State<CustomerSignUpScreen> {
               ),
             ),
           ),
-          SizedBox(
-            height: 30,
-          )
+
+
+
+          const SizedBox(
+            height: 20,
+          ),
+
+          const SizedBox(
+            height: 20,
+          ),
         ],
       ),
     );

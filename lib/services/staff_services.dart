@@ -74,57 +74,6 @@ class StaffServices {
     }
   }
 
-  static Future<APIResponse<String>> fetchTempUser(
-      {required String profileEmail}) async {
-    try {
-      final usersRef = FirebaseFirestore.instance.collection('temp_staff');
-
-      final querySnapshot =
-          await usersRef.where('email', isEqualTo: profileEmail).limit(1).get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        final userDoc = querySnapshot.docs.first.data();
-
-        if (userDoc.isNotEmpty) {
-          // Delete the document after fetching
-          for (var docSnapshot in querySnapshot.docs) {
-            await usersRef.doc(docSnapshot.id).delete();
-          }
-
-          DevLogs.logInfo('USER EMAIL FOUND');
-
-          return APIResponse(
-            success: true,
-            data: profileEmail,
-            message: 'User fetched successfully',
-          );
-        } else {
-          DevLogs.logError(
-              'PROFILE with email $profileEmail NOT FOUND: User fetching failed: Document data is null or malformed');
-          return APIResponse(
-            success: false,
-            message: 'User fetching failed: Document data is null or malformed',
-          );
-        }
-      } else {
-        DevLogs.logError(
-            'User fetching failed: No user found with the specified email');
-        return APIResponse(
-          success: false,
-          message:
-              'User fetching failed: No user found with the specified email',
-        );
-      }
-    } catch (e) {
-      DevLogs.logError('User fetching failed: ${e.toString()}');
-
-      return APIResponse(
-        success: false,
-        message: 'An error occurred while fetching the user: ${e.toString()}',
-      );
-    }
-  }
-
   static Future<APIResponse<StaffProfile>> fetchUserProfile(
       {required String profileEmail}) async {
     try {
@@ -172,6 +121,57 @@ class StaffServices {
       );
     }
   }
+
+  static Future<APIResponse<StaffProfile>> checkUserProfileForSignUp({required String profileEmail, required String phoneNumber}) async {
+    try {
+      final usersRef = FirebaseFirestore.instance.collection('staff');
+
+      final querySnapshot =
+      await usersRef
+          .where('email', isEqualTo: profileEmail)
+          .where('phoneNumber', isEqualTo: phoneNumber)
+          .limit(1).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final userDoc = querySnapshot.docs.first.data();
+
+        if (userDoc.isNotEmpty) {
+          final userProfile = StaffProfile.fromJson(userDoc);
+
+          DevLogs.logInfo('PROFILE with email $profileEmail FOUND');
+
+          return APIResponse(
+            success: true,
+            data: userProfile,
+            message: 'User fetched successfully',
+          );
+        } else {
+          DevLogs.logError(
+              'PROFILE with email $profileEmail NOT FOUND: User fetching failed: Document data is null or malformed');
+          return APIResponse(
+            success: false,
+            message: 'User fetching failed: Document data is null or malformed',
+          );
+        }
+      } else {
+        DevLogs.logError(
+            'User fetching failed: No user found with the specified email');
+        return APIResponse(
+          success: false,
+          message:
+          'User fetching failed: No user found with the specified email',
+        );
+      }
+    } catch (e) {
+      DevLogs.logError('User fetching failed: ${e.toString()}');
+
+      return APIResponse(
+        success: false,
+        message: 'An error occurred while fetching the user: ${e.toString()}',
+      );
+    }
+  }
+
 
 // Method to fetch all users from Firebase Firestore
   static Stream<List<StaffProfile>> streamAllUsers() {

@@ -112,4 +112,75 @@ class ResidentServices {
     }
   }
 
+  static Future<APIResponse<Resident>> checkResidentProfileForSignUp({
+    required String nationalId,
+    required String houseNumber,
+    required String suburb,
+    required String email,
+  }) async {
+    try {
+      // First try to find by National ID as it should be unique
+      final querySnapshot = await _firestore
+          .collection('residents')
+          .where('nationalId', isEqualTo: nationalId)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final residentData = querySnapshot.docs.first.data();
+        final residentProfile = Resident.fromJson(residentData);
+
+        // Verify if other details match
+        if (residentProfile.email.toLowerCase() != email.toLowerCase()) {
+          return APIResponse(
+            success: false,
+            message: 'Email address does not match our records for this National ID',
+          );
+        }
+
+        if (residentProfile.property.houseNumber != houseNumber ||
+            residentProfile.property.suburb != suburb) {
+          return APIResponse(
+            success: false,
+            message: 'Property details do not match our records for this National ID',
+          );
+        }
+
+        return APIResponse(
+          success: true,
+          data: residentProfile,
+          message: 'Resident profile found',
+        );
+      }
+
+      // If no match found by National ID, try by property details
+      final propertyQuerySnapshot = await _firestore
+          .collection('residents')
+          .where('property.houseNumber', isEqualTo: houseNumber)
+          .where('property.suburb', isEqualTo: suburb)
+          .limit(1)
+          .get();
+
+      if (propertyQuerySnapshot.docs.isNotEmpty) {
+        return APIResponse(
+          success: false,
+          message: 'A resident is already registered with this property. Please verify your details or contact support.',
+        );
+      }
+
+      // If no resident found with either criteria
+      return APIResponse(
+        success: false,
+        message: 'No resident profile found with the provided details. Please verify your information or contact support.',
+      );
+
+    } catch (e) {
+      return APIResponse(
+          success: false,
+          message: 'An error occurred while fetching resident profile: ${e.toString()}'
+      );
+    }
+  }
+
+
 }

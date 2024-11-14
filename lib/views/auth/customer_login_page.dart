@@ -135,7 +135,7 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
                               fontSize: 12
                             ),
                           ),
-                          onTap: ()=> AuthHelpers.customerValidateAndSubmitForm(
+                          onTap: ()=> AuthHelpers.customerLoginValidateAndSubmitForm(
                             email: emailController.text.trim(),
                             password: passwordController.text.trim(),
                             userRole: UserRole.customer,
@@ -250,7 +250,7 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
           FadeInSlide(
             duration: 2.4,
             child: GestureDetector(
-              onTap: () => Get.toNamed(RoutesHelper.signUpScreen),
+              onTap: () => Get.toNamed(RoutesHelper.residentSignUpScreen),
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(

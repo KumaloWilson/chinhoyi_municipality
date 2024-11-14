@@ -15,76 +15,82 @@ class AuthServices {
   static Future<APIResponse<User?>> residentSignUp({
     required String emailAddress,
     required String password,
+    required String nationalId,
+    required String houseNumber,
+    required String suburb,
   }) async {
     try {
-
-      final residentResponse = await ResidentServices.fetchResidentProfile(profileEmail: emailAddress);
+      // First check if a resident profile exists with the given details
+      final residentResponse = await ResidentServices.checkResidentProfileForSignUp(
+        nationalId: nationalId,
+        houseNumber: houseNumber,
+        suburb: suburb,
+        email: emailAddress,
+      );
 
       if (residentResponse.data != null) {
-        DevLogs.logError('Resident Found');
         try {
+          // Create Firebase auth account
           final UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
               email: residentResponse.data!.email,
               password: password
           );
 
           if (userCredential.user != null) {
+            // Update user profile
             await userCredential.user!.updateProfile(
-              displayName: "${residentResponse.data!.firstName} ${residentResponse.data!.firstName}",
+              displayName: "${residentResponse.data!.firstName} ${residentResponse.data!.lastName}",
             );
 
+            // Send email verification
             await userCredential.user!.sendEmailVerification();
+
+            return APIResponse(
+                success: true,
+                data: userCredential.user,
+                message: 'Account created successfully'
+            );
           }
           return APIResponse(
-              success: true,
-              data: userCredential.user,
-              message: 'User profile found and login successful'
+              success: false,
+              message: 'Failed to create account'
           );
         } on FirebaseAuthException catch (signUpError) {
-          // Handle signup errors
           switch (signUpError.code) {
             case 'email-already-in-use':
               return APIResponse(
-                  success: false, message: 'Email Address already in use');
+                  success: false, message: 'Email address already in use');
             case 'weak-password':
               return APIResponse(
-                  success: false, message: 'Your password is too weak');
+                  success: false, message: 'Password is too weak');
             default:
               return APIResponse(
                   success: false,
-                  message: 'Unknown error, please contact Support');
+                  message: 'An error occurred while creating your account');
           }
         }
       } else {
         return APIResponse(
-            success: false, message: 'No user found for that email.');
-      }
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'email-already-in-use':
-          return APIResponse(
-              success: false, message: 'Email Address already in use');
-        case 'weak-password':
-          return APIResponse(
-              success: false, message: 'Your password is too weak');
-        default:
-          return APIResponse(
-              success: false, message: 'Unknown error, please contact Support');
+            success: false,
+            message: 'No resident profile found with the provided details. Please verify your information.'
+        );
       }
     } catch (e) {
       return APIResponse(
-          success: false, message: 'An error occurred. Please try again.');
+          success: false,
+          message: 'An error occurred. Please try again.'
+      );
     }
   }
-
 
   static Future<APIResponse<User?>> staffSignUp({
     required String emailAddress,
     required String password,
+    required String phoneNumber
   }) async {
     try {
 
-      final profileResponse = await StaffServices.fetchUserProfile(profileEmail: emailAddress);
+      final profileResponse = await StaffServices.checkUserProfileForSignUp(profileEmail: emailAddress, phoneNumber: phoneNumber);
 
       if (profileResponse.data != null) {
         DevLogs.logError('Staff Found');
