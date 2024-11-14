@@ -7,9 +7,12 @@ import 'package:municipality/models/property.dart';
 import 'package:municipality/models/family_member.dart';
 import 'package:municipality/models/emergency_contact.dart';
 import 'package:municipality/repository/helpers/add_resident_helper.dart';
+import 'package:municipality/widgets/cards/family_member_card.dart';
 import 'package:municipality/widgets/custom_button/general_button.dart';
 import 'package:municipality/widgets/custom_dropdown.dart';
 import 'package:municipality/widgets/text_fields/custom_text_field.dart';
+
+import '../../../../widgets/dialogs/family_member_dialog.dart';
 
 class AddResidentScreen extends StatefulWidget {
   final WidgetRef ref;
@@ -366,14 +369,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
         children: [
           ..._familyMembers.map((member) => Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: ListTile(
-              title: Text('${member.firstName} ${member.lastName}'),
-              subtitle: Text(member.relationship),
-              tileColor: Colors.grey[200],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
+            child: FamilyMemberCard(familyMember: member)
           )),
           const SizedBox(height: 16),
           GeneralButton(
@@ -487,102 +483,15 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
   }
 
   void _showAddFamilyMemberDialog() {
-    final TextEditingController firstNameController = TextEditingController();
-    final TextEditingController lastNameController = TextEditingController();
-    String relationship = 'Spouse';
-    DateTime? dateOfBirth;
-    bool isDependent = false;
-
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Add Family Member'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomTextField(
-                  controller: firstNameController,
-                  labelText: 'First Name',
-                ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  controller: lastNameController,
-                  labelText: 'Last Name',
-                ),
-                const SizedBox(height: 16),
-                CustomDropDown(
-                  items: const ['Spouse', 'Child', 'Parent', 'Other'],
-                  selectedValue: relationship,
-                  onChanged: (value) {
-                    relationship = value!;
-                  },
-                  isEnabled: true,
-                ),
-                const SizedBox(height: 16),
-                GestureDetector(
-                  onTap: () async {
-                    dateOfBirth = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime.now(),
-                    );
-                  },
-                  child: CustomTextField(
-                    labelText: 'Date of Birth',
-                    enabled: false,
-                    controller: TextEditingController(
-                      text: dateOfBirth != null
-                          ? DateFormat('yyyy-MM-dd').format(dateOfBirth!)
-                          : '',
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                CheckboxListTile(
-                  title: const Text('Is Dependent'),
-                  value: isDependent,
-                  onChanged: (value) {
-                    setState(() {
-                      isDependent = value!;
-                    });
-                  },
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (firstNameController.text.isNotEmpty &&
-                    lastNameController.text.isNotEmpty &&
-                    dateOfBirth != null) {
-                  setState(() {
-                    _familyMembers.add(FamilyMember(
-                      memberId: DateTime.now().millisecondsSinceEpoch.toString(),
-                      residentId: '',  // This will be set when the resident is created
-                      firstName: firstNameController.text,
-                      lastName: lastNameController.text,
-                      relationship: relationship,
-                      dateOfBirth: dateOfBirth!,
-                      isDependent: isDependent,
-                    ));
-                  });
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Add'),
-            ),
-          ],
+        return AddFamilyMemberDialog(
+          onAdd: (FamilyMember newMember) {
+            setState(() {
+              _familyMembers.add(newMember);
+            });
+          },
         );
       },
     );

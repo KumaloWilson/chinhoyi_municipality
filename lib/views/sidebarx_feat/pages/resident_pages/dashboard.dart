@@ -59,8 +59,8 @@ class _CustomerDashBoardState extends ConsumerState<CustomerDashBoard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               _buildInfoColumn('Account Number', resident.accountNumber),
-                              _buildInfoColumn('Current Balance', '\$${resident.balances!.last.currentBalance}'),
-                              _buildInfoColumn('Bill Month', resident.balances!.last.month),
+                              _buildInfoColumn('Current Balance', '\$${resident.balances != null ? resident.balances!.last.currentBalance : 0}'),
+                              _buildInfoColumn('Bill Month', resident.balances != null ? resident.balances!.last.month : DateFormat.MMMM().format(DateTime.now()),),
                               _buildInfoColumn('Status', 'Active'),
                             ],
                           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:municipality/models/resident.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:municipality/widgets/cards/family_member_card.dart';
 
 import '../../../../core/constants/color_constants.dart';
 
@@ -44,7 +45,7 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
             _buildInfoCard(
               'General Information',[
                 _buildInfoRow('Account Number', widget.resident.accountNumber),
-                if(widget.resident.balances!.isNotEmpty)_buildInfoRow('Current Balance', widget.resident.balances!.last.currentBalance.toString())
+                if(widget.resident.balances != null)_buildInfoRow('Current Balance', widget.resident.balances!.last.currentBalance.toString())
             ]
 
             ),
@@ -143,11 +144,7 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
         final member = widget.resident.familyMembers[index];
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: ListTile(
-            title: Text('${member.firstName} ${member.lastName}'),
-            subtitle: Text('${member.relationship} - ${DateFormat('yyyy-MM-dd').format(member.dateOfBirth)}'),
-            trailing: Text(member.isDependent ? 'Dependent' : 'Independent'),
-          ),
+          child: FamilyMemberCard(familyMember: member)
         );
       },
     );

@@ -7,31 +7,58 @@ import 'package:municipality/services/staff_services.dart';
 
 import '../core/utils/api_response.dart';
 import '../core/utils/routes.dart';
+import '../global/global.dart';
+import '../repository/helpers/auth_helpers.dart';
 
 class AuthServices {
   // Sign up with email and password, with email verification
-  static Future<APIResponse<String?>> signUpWithVerification({
-    String? profilePic,
+  static Future<APIResponse<User?>> residentSignUp({
     required String emailAddress,
     required String password,
-    required String userName,
   }) async {
     try {
-      final UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailAddress,
-        password: password,
-      );
 
-      await userCredential.user!.sendEmailVerification();
-      await userCredential.user!.updateDisplayName(userName);
+      final residentResponse = await ResidentServices.fetchResidentProfile(profileEmail: emailAddress);
 
-      final String? userToken = await userCredential.user!.getIdToken();
+      if (residentResponse.data != null) {
+        DevLogs.logError('Resident Found');
+        try {
+          final UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              email: residentResponse.data!.email,
+              password: password
+          );
 
-      return APIResponse(
-          success: true,
-          data: userToken,
-          message: 'Signup successful. Please verify your email.');
+          if (userCredential.user != null) {
+            await userCredential.user!.updateProfile(
+              displayName: "${residentResponse.data!.firstName} ${residentResponse.data!.firstName}",
+            );
+
+            await userCredential.user!.sendEmailVerification();
+          }
+          return APIResponse(
+              success: true,
+              data: userCredential.user,
+              message: 'User profile found and login successful'
+          );
+        } on FirebaseAuthException catch (signUpError) {
+          // Handle signup errors
+          switch (signUpError.code) {
+            case 'email-already-in-use':
+              return APIResponse(
+                  success: false, message: 'Email Address already in use');
+            case 'weak-password':
+              return APIResponse(
+                  success: false, message: 'Your password is too weak');
+            default:
+              return APIResponse(
+                  success: false,
+                  message: 'Unknown error, please contact Support');
+          }
+        }
+      } else {
+        return APIResponse(
+            success: false, message: 'No user found for that email.');
+      }
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
@@ -50,6 +77,74 @@ class AuthServices {
     }
   }
 
+
+  static Future<APIResponse<User?>> staffSignUp({
+    required String emailAddress,
+    required String password,
+  }) async {
+    try {
+
+      final profileResponse = await StaffServices.fetchUserProfile(profileEmail: emailAddress);
+
+      if (profileResponse.data != null) {
+        DevLogs.logError('Staff Found');
+        try {
+          final UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              email: profileResponse.data!.email,
+              password: password
+          );
+
+          if (userCredential.user != null) {
+            await userCredential.user!.updateProfile(
+              displayName: "${profileResponse.data!.firstName} ${profileResponse.data!.firstName}",
+            );
+
+            await userCredential.user!.sendEmailVerification();
+          }
+          return APIResponse(
+              success: true,
+              data: userCredential.user,
+              message: 'User profile found and login successful'
+          );
+        } on FirebaseAuthException catch (signUpError) {
+          // Handle signup errors
+          switch (signUpError.code) {
+            case 'email-already-in-use':
+              return APIResponse(
+                  success: false, message: 'Email Address already in use');
+            case 'weak-password':
+              return APIResponse(
+                  success: false, message: 'Your password is too weak');
+            default:
+              return APIResponse(
+                  success: false,
+                  message: 'Unknown error, please contact Support');
+          }
+        }
+      } else {
+        return APIResponse(
+            success: false, message: 'No user found for that email.');
+      }
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'email-already-in-use':
+          return APIResponse(
+              success: false, message: 'Email Address already in use');
+        case 'weak-password':
+          return APIResponse(
+              success: false, message: 'Your password is too weak');
+        default:
+          return APIResponse(
+              success: false, message: 'Unknown error, please contact Support');
+      }
+    } catch (e) {
+      return APIResponse(
+          success: false, message: 'An error occurred. Please try again.');
+    }
+  }
+
+
+
   // Login with email and password
 
   static Future<APIResponse<User?>> staffLogin({
@@ -60,71 +155,51 @@ class AuthServices {
       final UserCredential loginResponse = await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailAddress, password: password);
 
       if (loginResponse.user != null) {
-        return APIResponse(
-            success: true,
-            data: loginResponse.user,
-            message: 'Login successful');
-      } else {
-        return APIResponse(
-            success: false, message: 'Failed to login. Please try again.');
-      }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
-        // Check if the user profile exists
-        final userDoc = await StaffServices.fetchUserProfile(profileEmail: emailAddress);
+        final userRole = await AuthHelpers.getStaffRole(loginResponse.user!);
 
-        if (userDoc.data != null) {
-          try {
-            final UserCredential userCredential = await FirebaseAuth.instance
-                .createUserWithEmailAndPassword(
-                email: emailAddress, password: password);
-
-            if (userCredential.user != null) {
-              await userCredential.user!.updateProfile(
-                displayName: "${userDoc.data!.firstName} ${userDoc.data!.firstName}",
-              );
-
-              await userCredential.user!.sendEmailVerification();
-            }
-            return APIResponse(
-                success: true,
-                data: userCredential.user,
-                message: 'User profile found and login successful'
-            );
-          } on FirebaseAuthException catch (signUpError) {
-            // Handle signup errors
-            switch (signUpError.code) {
-              case 'email-already-in-use':
-                return APIResponse(
-                    success: false, message: 'Email Address already in use');
-              case 'weak-password':
-                return APIResponse(
-                    success: false, message: 'Your password is too weak');
-              default:
-                return APIResponse(
-                    success: false,
-                    message: 'Unknown error, please contact Support');
-            }
-          }
+        if (userRole != null) {
+          await signOut();
+          return APIResponse(
+            success: false,
+            message: 'Invalid UserRole, Please switch your your role and tyr again',
+          );
         } else {
           return APIResponse(
-              success: false, message: 'No user found for that email.');
+            success: true,
+            data: loginResponse.user,
+            message: 'Login successful',
+          );
         }
-      } else if (e.code == 'wrong-password') {
-        return APIResponse(success: false, message: 'Incorrect password.');
       } else {
-        switch (e.code) {
-          case 'invalid-email':
-            return APIResponse(
-                success: false, message: 'Invalid email address format.');
-          case 'user-disabled':
-            return APIResponse(
-                success: false, message: 'User account is disabled.');
-          default:
-            return APIResponse(
-                success: false,
-                message: e.message ?? 'An unknown error occurred.');
-        }
+        return APIResponse(
+          success: false,
+          message: 'Failed to login. Please try again.',
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'invalid-email':
+          return APIResponse(
+              success: false, message: 'Invalid email address format.');
+
+        case 'user-not-found':
+          return APIResponse(
+              success: false, message: 'Email address not found');
+
+        case 'invalid-credential':
+          return APIResponse(
+              success: false, message: 'Invalid email or password');
+
+        case 'wrong-password':
+          return APIResponse(
+              success: false, message: 'Invalid password');
+        case 'user-disabled':
+          return APIResponse(
+              success: false, message: 'User account is disabled.');
+        default:
+          return APIResponse(
+              success: false,
+              message: e.message ?? 'An unknown error occurred.');
       }
     } catch (e) {
       return APIResponse(
@@ -137,82 +212,78 @@ class AuthServices {
   static Future<APIResponse<User?>> residentLogin({
     required String emailAddress,
     required String password,
+    required UserRole currentRole,
   }) async {
     try {
-      final UserCredential loginResponse = await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailAddress, password: password);
+      final UserCredential loginResponse = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: emailAddress, password: password);
 
       if (loginResponse.user != null) {
-        return APIResponse(
-            success: true,
-            data: loginResponse.user,
-            message: 'Login successful');
-      } else {
-        return APIResponse(
-            success: false, message: 'Failed to login. Please try again.');
-      }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
-        // Check if the user profile exists
-        final userDoc = await ResidentServices.fetchResidentProfile(profileEmail: emailAddress);
+        final userAccountResponse = await ResidentServices.fetchResidentProfile(profileEmail: emailAddress);
 
-        if (userDoc.data != null) {
-          try {
-            final UserCredential userCredential = await FirebaseAuth.instance
-                .createUserWithEmailAndPassword(
-                email: emailAddress, password: password);
-
-            if (userCredential.user != null) {
-              await userCredential.user!.updateProfile(
-                displayName: "${userDoc.data!.firstName} ${userDoc.data!.firstName}",
-              );
-
-              await userCredential.user!.sendEmailVerification();
-            }
-            return APIResponse(
-                success: true,
-                data: userCredential.user,
-                message: 'User profile found and login successful'
-            );
-          } on FirebaseAuthException catch (signUpError) {
-            // Handle signup errors
-            switch (signUpError.code) {
-              case 'email-already-in-use':
-                return APIResponse(
-                    success: false, message: 'Email Address already in use');
-              case 'weak-password':
-                return APIResponse(
-                    success: false, message: 'Your password is too weak');
-              default:
-                return APIResponse(
-                    success: false,
-                    message: 'Unknown error, please contact Support');
-            }
-          }
+        if (userAccountResponse.data == null) {
+          await signOut();
+          return APIResponse(
+            success: false,
+            message: 'Invalid UserRole, Please switch your your role and tyr again',
+          );
         } else {
           return APIResponse(
-              success: false, message: 'No user found for that email.');
+            success: true,
+            data: loginResponse.user,
+            message: 'Login successful',
+          );
         }
-      } else if (e.code == 'wrong-password') {
-        return APIResponse(success: false, message: 'Incorrect password.');
       } else {
-        switch (e.code) {
-          case 'invalid-email':
-            return APIResponse(
-                success: false, message: 'Invalid email address format.');
-          case 'user-disabled':
-            return APIResponse(
-                success: false, message: 'User account is disabled.');
-          default:
-            return APIResponse(
-                success: false,
-                message: e.message ?? 'An unknown error occurred.');
-        }
+        return APIResponse(
+          success: false,
+          message: 'Failed to login. Please try again.',
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'invalid-email':
+          return APIResponse(
+            success: false,
+            message: 'Invalid email address format.',
+          );
+
+        case 'user-not-found':
+          return APIResponse(
+            success: false,
+            message: 'Email address not found',
+          );
+
+        case 'invalid-credential':
+          return APIResponse(
+            success: false,
+            message: 'Invalid email or password',
+          );
+
+        case 'wrong-password':
+          return APIResponse(
+            success: false,
+            message: 'Invalid password',
+          );
+        case 'user-disabled':
+          return APIResponse(
+            success: false,
+            message: 'User account is disabled.',
+          );
+        default:
+          return APIResponse(
+            success: false,
+            message: e.message ?? 'An unknown error occurred.',
+          );
       }
     } catch (e) {
       return APIResponse(
-          success: false, message: 'An error occurred. Please try again.');
+        success: false,
+        message: 'An error occurred. Please try again.',
+      );
     }
   }
+
 
   // Sign out user
   static Future<APIResponse<void>> signOut() async {
