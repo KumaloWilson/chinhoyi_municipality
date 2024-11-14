@@ -71,6 +71,7 @@ class AuthHelpers {
   static void customerValidateAndSubmitForm({
     required String password,
     required String email,
+    required UserRole userRole
   }) async {
     if (password.isEmpty) {
       CustomSnackBar.showErrorSnackbar(message: 'Password is required.');
@@ -97,6 +98,7 @@ class AuthHelpers {
     await AuthServices.residentLogin(
       emailAddress: email.trim(),
       password: password.trim(),
+      currentRole: userRole
     ).then((response) {
       if (!response.success && response.message != 'No user found for that email.') {
         if (!Get.isSnackbarOpen) Get.back();

@@ -137,14 +137,14 @@ class AddResidentHelper {
     );
 
 
-    await ResidentServices.addResidentToFirebase(residentProfile: resident)
-        .then((response) {
+    await ResidentServices.addResidentToFirebase(residentProfile: resident).then((response) {
       if (!response.success) {
         if (!Get.isSnackbarOpen) Get.back();
-        CustomSnackBar.showErrorSnackbar(
-            message: response.message ?? 'Something went wrong');
+        CustomSnackBar.showErrorSnackbar(message: response.message ?? 'Something went wrong');
       } else {
         ref.refresh(ProviderUtils.residentsProvider);
+        CustomSnackBar.showSuccessSnackbar(
+            message: 'Resident created successfully');
         CustomSnackBar.showSuccessSnackbar(
             message: 'Resident created successfully');
         if (Get.isDialogOpen!) Get.back(closeOverlays: true);

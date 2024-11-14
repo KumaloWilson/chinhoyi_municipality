@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/announcements_management.dart';
+import 'package:municipality/views/sidebarx_feat/pages/staff_pages/dashboard.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/service_requests.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_residents.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_users.dart';
@@ -21,7 +22,7 @@ class AdminTabScreensContainer extends StatelessWidget {
       builder: (context, child) {
         switch (controller.selectedIndex) {
           case 0:
-            return const Center(child: Text('Dashboard'),);
+            return const StaffDashboard();
           case 1:
             return const ManageResidentsScreen();
           case 2:

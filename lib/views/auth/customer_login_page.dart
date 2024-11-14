@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:municipality/core/constants/dimensions.dart';
 import 'package:municipality/core/constants/local_image_constants.dart';
+import 'package:municipality/global/global.dart';
 import '../../animations/fade_in_slide.dart';
 import '../../core/constants/color_constants.dart';
 import '../../core/utils/routes.dart';
@@ -136,7 +137,8 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
                           ),
                           onTap: ()=> AuthHelpers.customerValidateAndSubmitForm(
                             email: emailController.text.trim(),
-                            password: passwordController.text.trim()
+                            password: passwordController.text.trim(),
+                            userRole: UserRole.customer,
                           )
                       ),
                     ),
