@@ -119,7 +119,7 @@ class _AddServiceRequestScreenState extends State<AddServiceRequestScreen> {
                       resolutionNotes: _resolutionNotesController.text,
                     );
 
-                    AddServiceRequestHelper.validateAndSubmitForm(serviceRequest: serviceRequest, ref: widget.ref);
+                    ServiceRequestHelper.validateAndSubmitForm(serviceRequest: serviceRequest, ref: widget.ref);
 
                   },
                   width: 200,

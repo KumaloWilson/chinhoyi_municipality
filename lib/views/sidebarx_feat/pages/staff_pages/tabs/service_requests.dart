@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../models/service_request.dart';
 import '../../../../../widgets/cards/service_card.dart';
 
 class ResidentServicesRequestsTab extends StatefulWidget {
+  final WidgetRef ref;
   final String searchTerm;
   final List<ServiceRequest> requests;
 
   const ResidentServicesRequestsTab({
     super.key,
     required this.requests,
-    required this.searchTerm,
+    required this.searchTerm, required this.ref,
   });
 
   @override
@@ -23,7 +25,7 @@ class _ResidentServicesRequestsTabState extends State<ResidentServicesRequestsTa
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this); // Four tabs for statuses
+    _tabController = TabController(length: 5, vsync: this); // Four tabs for statuses and one for "All"
   }
 
   @override
@@ -32,11 +34,12 @@ class _ResidentServicesRequestsTabState extends State<ResidentServicesRequestsTa
     super.dispose();
   }
 
-  List<ServiceRequest> _filterRequestsByStatus(String status) {
+  List<ServiceRequest> _filterRequestsByStatus({String? status}) {
     return widget.requests.where((request) {
       final addressMatch = request.residentAddress.toLowerCase().contains(widget.searchTerm.toLowerCase());
       final categoryMatch = request.category.toLowerCase().contains(widget.searchTerm.toLowerCase());
-      return (addressMatch || categoryMatch) && request.status == status;
+      final statusMatch = status == null || request.status == status;
+      return (addressMatch || categoryMatch) && statusMatch;
     }).toList();
   }
 
@@ -55,6 +58,7 @@ class _ResidentServicesRequestsTabState extends State<ResidentServicesRequestsTa
             labelColor: Theme.of(context).primaryColor,
             unselectedLabelColor: Colors.grey,
             tabs: const [
+              Tab(text: 'All'),
               Tab(text: 'Open'),
               Tab(text: 'In Progress'),
               Tab(text: 'Resolved'),
@@ -65,6 +69,7 @@ class _ResidentServicesRequestsTabState extends State<ResidentServicesRequestsTa
             child: TabBarView(
               controller: _tabController,
               children: [
+                _buildRequestList(), // "All" tab
                 _buildRequestList('Open'),
                 _buildRequestList('In Progress'),
                 _buildRequestList('Resolved'),
@@ -77,8 +82,8 @@ class _ResidentServicesRequestsTabState extends State<ResidentServicesRequestsTa
     );
   }
 
-  Widget _buildRequestList(String status) {
-    final filteredServices = _filterRequestsByStatus(status);
+  Widget _buildRequestList([String? status]) {
+    final filteredServices = _filterRequestsByStatus(status: status);
 
     if (filteredServices.isEmpty) {
       return const Center(child: Text('No matching service found.'));
@@ -89,7 +94,7 @@ class _ResidentServicesRequestsTabState extends State<ResidentServicesRequestsTa
       physics: const BouncingScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
         final service = filteredServices[index];
-        return ServiceCard(serviceRequest: service);
+        return ServiceCard(serviceRequest: service, ref: widget.ref,);
       },
     );
   }

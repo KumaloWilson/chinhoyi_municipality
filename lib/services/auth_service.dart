@@ -163,11 +163,11 @@ class AuthServices {
       if (loginResponse.user != null) {
         final userRole = await AuthHelpers.getStaffRole(loginResponse.user!);
 
-        if (userRole != null) {
+        if (userRole == null) {
           await signOut();
           return APIResponse(
             success: false,
-            message: 'Invalid UserRole, Please switch your your role and tyr again',
+            message: 'Invalid UserRole, Please switch your your role and try again',
           );
         } else {
           return APIResponse(
@@ -315,27 +315,7 @@ class AuthServices {
     }
   }
 
-  static Future<APIResponse<String?>> fetchUserRole(String email) async {
-    final usersRef = FirebaseFirestore.instance.collection('staff');
 
-    // Query the collection to find a user document with the specified email
-    final querySnapshot = await usersRef.where('email', isEqualTo: email).get();
-
-    // Check if any documents are found
-    if (querySnapshot.docs.isNotEmpty) {
-      // Get the first document found (assuming email is unique)
-      final userDoc = querySnapshot.docs.first;
-      return APIResponse(
-          success: true,
-          data: userDoc.data()['role'],
-          message: 'Role fetched successfully');
-    } else {
-      return APIResponse(
-          success: false,
-          message:
-              'Role fetching failed: no user found with the specified email');
-    }
-  }
 
   static Future<APIResponse<void>> requestVerificationCode({
     required String phoneNumber,

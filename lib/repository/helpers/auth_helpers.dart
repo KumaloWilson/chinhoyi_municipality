@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:municipality/services/staff_services.dart';
 import '../../core/utils/logs.dart';
 import '../../core/utils/routes.dart';
 import '../../core/utils/shared_pref.dart';
@@ -304,12 +305,12 @@ class AuthHelpers {
     UserRole? userRole = await CacheUtils.getUserRoleFromCache();
 
     if (userRole == null) {
-      await AuthServices.fetchUserRole(user.email!).then((response) async{
+      await StaffServices.fetchUserProfile(profileEmail:  user.email!).then((response) async{
 
-        DevLogs.logInfo("USER ROLE = ${response.data}");
+        DevLogs.logInfo("USER ROLE = ${response.data!.role}");
 
         if (response.data != null) {
-          await CacheUtils.saveUserRoleToCache(response.data!);
+          await CacheUtils.saveUserRoleToCache(response.data!.role);
 
           userRole = await CacheUtils.getUserRoleFromCache();
         }

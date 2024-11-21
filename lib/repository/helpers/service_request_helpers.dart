@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:municipality/models/service_request.dart';
 import 'package:municipality/services/service_request_services.dart';
+import '../../core/utils/providers.dart';
 import '../../widgets/circular_loader/circular_loader.dart';
 import '../../widgets/snackbar/custom_snackbar.dart';
 
-class AddServiceRequestHelper {
+class ServiceRequestHelper {
   static Future<void> validateAndSubmitForm({
     required ServiceRequest serviceRequest,
     required WidgetRef ref,
@@ -39,13 +40,14 @@ class AddServiceRequestHelper {
     );
 
 
-    await ServiceRequestServices.addServiceRequestToFirebase(serviceRequest: serviceRequest, ref: ref)
+    await ServiceRequestServices.addServiceRequestToFirebase(serviceRequest: serviceRequest,)
         .then((response) {
       if (!response.success) {
         if (!Get.isSnackbarOpen) Get.back();
         CustomSnackBar.showErrorSnackbar(
             message: response.message ?? 'Something went wrong');
       } else {
+        ref.refresh(ProviderUtils.serviceRequestsProvider);
         CustomSnackBar.showSuccessSnackbar(
             message: 'Request Submitted successfully');
         if (Get.isDialogOpen!) Get.back(closeOverlays: true);
@@ -77,8 +79,10 @@ class AddServiceRequestHelper {
   }
 
 
-  static Future<void> validateAndUpdatePROFILE({
-    required ServiceRequest resident,
+  static Future<void> validateAndUpdateRequest({
+    required String requestID,
+    required ServiceRequest request,
+    required WidgetRef ref
   }) async {
     // Show loader while creating user
     Get.dialog(
@@ -87,5 +91,20 @@ class AddServiceRequestHelper {
       ),
       barrierDismissible: false,
     );
+
+    await ServiceRequestServices.updateServiceRequestProfile(requestID: requestID, updatedRequest: request)
+        .then((response) {
+      if (!response.success) {
+        if (!Get.isSnackbarOpen) Get.back();
+        CustomSnackBar.showErrorSnackbar(
+            message: response.message ?? 'Something went wrong');
+      } else {
+        ref.refresh(ProviderUtils.serviceRequestsProvider);
+        CustomSnackBar.showSuccessSnackbar(
+            message: 'Request updated successfully');
+        if (Get.isDialogOpen!) Get.back(closeOverlays: true);
+      }
+    });
+    
   }
 }

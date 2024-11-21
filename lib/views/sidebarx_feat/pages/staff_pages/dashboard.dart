@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:municipality/core/utils/routes.dart';
 import 'package:municipality/repository/helpers/finances_helper.dart';
 
 import '../../../../core/constants/color_constants.dart';
@@ -78,10 +80,28 @@ class _StaffDashboardState extends ConsumerState<StaffDashboard> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            _buildQuickActionButton('Add Customer', Icons.person_add, Colors.blue),
-                            _buildQuickActionButton('Manage Accounts', Icons.manage_accounts, Colors.orange),
-                            _buildQuickActionButton('View Reports', Icons.bar_chart, Colors.green),
-                            _buildQuickActionButton('Support', Icons.support_agent, Colors.purple),
+                            _buildQuickActionButton(
+                              label: 'Add Customer',
+                              icon:  Icons.person_add,
+                              color:  Colors.blue,
+                              onTap: () {
+                                Get.toNamed(RoutesHelper.addResidentsScreen, arguments: ref);
+                              },
+                            ),
+                            _buildQuickActionButton(
+                               label:  'Manage Accounts',
+                               icon:  Icons.manage_accounts,
+                               color:  Colors.orange),
+                            _buildQuickActionButton(
+                               label:  'View Reports',
+                               icon:  Icons.bar_chart,
+                               color:  Colors.green
+                            ),
+                            _buildQuickActionButton(
+                              label:   'Support',
+                              icon:   Icons.support_agent,
+                              color:   Colors.purple
+                            ),
                           ],
                         ),
                       ],
@@ -145,17 +165,20 @@ class _StaffDashboardState extends ConsumerState<StaffDashboard> {
     );
   }
 
-  Widget _buildQuickActionButton(String label, IconData icon, Color color) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 28,
-          backgroundColor: color.withOpacity(0.1),
-          child: Icon(icon, color: color, size: 28),
-        ),
-        const SizedBox(height: 8),
-        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[800])),
-      ],
+  Widget _buildQuickActionButton({required String label, required IconData icon, required Color color, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: color.withOpacity(0.1),
+            child: Icon(icon, color: color, size: 28),
+          ),
+          const SizedBox(height: 8),
+          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[800])),
+        ],
+      ),
     );
   }
 

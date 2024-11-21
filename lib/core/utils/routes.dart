@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:municipality/models/resident.dart';
+import 'package:municipality/models/service_request.dart';
 import 'package:municipality/views/auth/customer_login_page.dart';
 import 'package:municipality/views/auth/signup.dart';
 import 'package:municipality/views/auth/staff_login_page.dart';
 import 'package:municipality/views/auth/staff_sign_up.dart';
+import 'package:municipality/views/sidebarx_feat/pages/resident_pages/service_request_details.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/add_announcement_screen.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/add_user.dart';
 import 'package:municipality/views/splash/splash.dart';
@@ -37,6 +39,7 @@ class RoutesHelper {
   static String viewUserScreen = '/viewUsers';
   static String userProfileScreen = '/profile';
   static String residentDetailsScreen = '/residentDetails';
+  static String serviceRequestDetailsScreen = '/serviceRequestDetails';
   static String updateShiftScreen = '/updateShift';
   static String addResidentsScreen = '/addResidents';
   static String addServiceRequestScreen = '/addServiceRequest';
@@ -73,6 +76,14 @@ class RoutesHelper {
           final Resident resident = Get.arguments as Resident;
 
           return ResidentDetailsScreen(resident: resident);
+        }),
+
+    GetPage(
+        name: serviceRequestDetailsScreen,
+        page: () {
+          final ServiceRequest request = Get.arguments as ServiceRequest;
+
+          return ServiceRequestDetailsScreen(serviceRequest: request);
         }),
 
     GetPage(

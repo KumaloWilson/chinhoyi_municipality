@@ -79,8 +79,7 @@ class StaffServices {
     try {
       final usersRef = FirebaseFirestore.instance.collection('staff');
 
-      final querySnapshot =
-          await usersRef.where('email', isEqualTo: profileEmail).limit(1).get();
+      final querySnapshot =  await usersRef.where('email', isEqualTo: profileEmail).limit(1).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         final userDoc = querySnapshot.docs.first.data();

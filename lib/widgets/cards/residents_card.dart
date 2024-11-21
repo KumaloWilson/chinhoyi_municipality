@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:municipality/models/resident.dart';
-import '../../core/constants/color_constants.dart';
 import '../../core/utils/routes.dart';
 
 class ResidentCard extends StatelessWidget {
-  final Resident resident;
-  const ResidentCard({super.key, required this.resident});
+  final Resident residence;
+  const ResidentCard({super.key, required this.residence});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(RoutesHelper.residentDetailsScreen, arguments: resident);
+        Get.toNamed(RoutesHelper.residentDetailsScreen, arguments: residence);
       },
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -29,21 +28,21 @@ class ResidentCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${resident.lastName} ${resident.firstName}",
+                    "${residence.lastName} ${residence.firstName}",
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "${resident.property.houseNumber} ${resident.property.suburb}",
+                    "${residence.property.houseNumber} ${residence.property.suburb}",
                     style:const TextStyle(fontSize: 12),
                   ),
                   Text(
-                    resident.phoneNumber,
+                    residence.phoneNumber,
                     style: const TextStyle(fontSize: 12),
                   ),
                 ],
               ),
               subtitle: Text(
-                resident.accountStatus,
+                residence.accountStatus,
                 style: const TextStyle(fontSize: 12),
               ),
               trailing: PopupMenuButton<int>(
@@ -51,9 +50,8 @@ class ResidentCard extends StatelessWidget {
                   buildPopUpOption(
                     title: 'View Residence',
                     icon: Icons.remove_red_eye_outlined,
-                    value: 0,
                     onTap: () {
-                      
+                      Get.toNamed(RoutesHelper.residentDetailsScreen, arguments: residence);
                     },
                   ),
                 ],
@@ -69,12 +67,10 @@ class ResidentCard extends StatelessWidget {
   dynamic buildPopUpOption({
     required String title,
     required IconData icon,
-    required int value,
     required void Function() onTap,
   }) {
     return PopupMenuItem<int>(
       onTap: onTap,
-      value: value,
       child: Row(
         children: [
           Icon(icon, color: Colors.black54),

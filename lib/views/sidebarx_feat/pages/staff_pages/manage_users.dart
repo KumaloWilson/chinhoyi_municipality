@@ -179,13 +179,13 @@ class _ManageStaffScreenState extends ConsumerState<ManageStaffScreen>
             ),
             tabAlignment: TabAlignment.start,
             tabs: const [
-              Tab(text: 'Nurses'),
-              Tab(text: 'Social Workers'),
-              Tab(text: 'Care/Support Workers'),
+              Tab(text: 'All'),
+              Tab(text: 'Regular'),
+              Tab(text: 'Admins'),
             ],
           ),
           SizedBox(
-            height: 400,
+            height: 600,
             child: TabBarView(
               controller: _tabController,
               children: [
@@ -195,11 +195,11 @@ class _ManageStaffScreenState extends ConsumerState<ManageStaffScreen>
                 ),
                 StaffTab(
                   searchTerm: searchTerm,
-                  users: users
+                  users: users.where((user) =>  user.role.toLowerCase() == 'staff').toList(),
                 ),
                 StaffTab(
                   searchTerm: searchTerm,
-                  users: users
+                  users: users.where((user) =>  user.role.toLowerCase() == 'admin').toList(),
                 ),
               ],
             ),

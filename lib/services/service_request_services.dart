@@ -11,7 +11,6 @@ class ServiceRequestServices {
   // Method to add a resident profile to Firebase Firestore
   static Future<APIResponse<String?>> addServiceRequestToFirebase({
     required ServiceRequest serviceRequest,
-    required WidgetRef ref
   }) async {
     try {
       
@@ -19,7 +18,6 @@ class ServiceRequestServices {
       final data = serviceRequest.toJson();
       await _firestore.collection('service_requests').add(data);
 
-      ref.refresh(ProviderUtils.serviceRequestsProvider);
       return APIResponse(success: true, message: 'Request added successfully');
     } catch (e) {
       return APIResponse(success: false, message: e.toString());
@@ -27,7 +25,7 @@ class ServiceRequestServices {
   }
 
   // Method to update an existing resident profile
-  static Future<APIResponse<String>> updateResidentProfile({
+  static Future<APIResponse<String>> updateServiceRequestProfile({
     required String requestID,
     required ServiceRequest updatedRequest,
   }) async {
@@ -53,75 +51,6 @@ class ServiceRequestServices {
     } catch (e) {
       DevLogs.logError('ResidentProfile Update Error: $e');
       return APIResponse(success: false, message: 'Profile update failed: $e');
-    }
-  }
-
-  // Method to fetch resident profile
-  static Stream<APIResponse<List<ServiceRequest>>> streamResidentServiceRequests({
-    required String residentId,
-  }) {
-    try {
-      final snapshots = _firestore
-          .collection('service_requests')
-          .where('residentId', isEqualTo: residentId)
-          .snapshots();
-
-      return snapshots.map((querySnapshot) {
-        if (querySnapshot.docs.isNotEmpty) {
-          // Map each document to a ServiceRequest and collect them into a list
-          final serviceRequests = querySnapshot.docs
-              .map((doc) => ServiceRequest.fromJson(doc.data()))
-              .toList();
-
-          return APIResponse<List<ServiceRequest>>(
-            success: true,
-            data: serviceRequests,
-            message: 'Resident service requests fetched successfully',
-          );
-        } else {
-          return APIResponse<List<ServiceRequest>>(
-            success: false,
-            message: 'No service requests found for the specified residentId',
-          );
-        }
-      });
-    } catch (e) {
-      return Stream.value(APIResponse<List<ServiceRequest>>(
-        success: false,
-        message: e.toString(),
-      ));
-    }
-  }
-
-
-  static Stream<APIResponse<List<ServiceRequest>>> streamAllServiceRequests() {
-    try {
-      final snapshots = _firestore.collection('service_requests').snapshots();
-
-      return snapshots.map((querySnapshot) {
-        if (querySnapshot.docs.isNotEmpty) {
-          // Map each document to a ServiceRequest and collect them into a list
-          final serviceRequests = querySnapshot.docs
-              .map((doc) => ServiceRequest.fromJson(doc.data()))
-              .toList();
-
-          return APIResponse<List<ServiceRequest>>(
-            success: true,
-            data: serviceRequests,
-            message: 'Service requests fetched successfully',
-          );
-        } else {
-          return APIResponse<List<ServiceRequest>>(
-            success: false,
-            message: 'No service requests found',
-          );
-        }
-      });
-    } catch (e) {
-      return Stream.value(APIResponse<List<ServiceRequest>>(
-        success: false,
-        message: e.toString(),
-      ));
     }
   }
 
