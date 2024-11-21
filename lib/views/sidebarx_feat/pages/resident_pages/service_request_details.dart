@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:municipality/core/constants/color_constants.dart';
 import 'package:municipality/models/service_request.dart';
 
+import '../../../../repository/helpers/service_request_helpers.dart';
+
 class ServiceRequestDetailsScreen extends StatelessWidget {
   final ServiceRequest serviceRequest;
+  final WidgetRef ref;
 
   const ServiceRequestDetailsScreen({
     super.key,
-    required this.serviceRequest,
+    required this.serviceRequest, required this.ref,
   });
 
   @override
@@ -105,7 +109,7 @@ class ServiceRequestDetailsScreen extends StatelessWidget {
                   ),
 
                 // Actions Section
-                _buildCardSection(
+                if(serviceRequest.status == 'Open' || serviceRequest.status == 'In Progress')_buildCardSection(
                   title: 'Actions',
                   children: [
                     Row(
@@ -113,16 +117,28 @@ class ServiceRequestDetailsScreen extends StatelessWidget {
                         _buildActionButton(
                           label: 'Mark Resolved',
                           color: Colors.green,
-                          onPressed: () {
-                            // Logic to mark as resolved
+                          onPressed: () async{
+                            await ServiceRequestHelper.validateAndUpdateRequest(
+                                requestID: serviceRequest.requestId,
+                                request: serviceRequest.copyWith(
+                                    status: 'Resolved'
+                                ),
+                                ref: ref
+                            );
                           },
                         ),
                         const SizedBox(width: 16),
                         _buildActionButton(
                           label: 'Close Request',
                           color: Colors.red,
-                          onPressed: () {
-                            // Logic to close the request
+                          onPressed: () async{
+                            await ServiceRequestHelper.validateAndUpdateRequest(
+                                requestID: serviceRequest.requestId,
+                                request: serviceRequest.copyWith(
+                                    status: 'Closed'
+                                ),
+                                ref: ref
+                            );
                           },
                         ),
                       ],

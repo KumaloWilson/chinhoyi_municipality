@@ -1,0 +1,4 @@
+class SecretsConfig{
+  static String publishableKey = 'pk_test_51NzbkSE7TNrdBh19rVQFVf5O6asc1nnJSmzBEDhJYW2Ritdbrov0HM4M1Ot67z2x6AdJau63GKmT40BpnI6L48jC00LQWsTgh7';
+  static String secretKey = 'sk_test_51NzbkSE7TNrdBh19FAx3i47BAnVmD3M824XQSrtzI2nJzdf4oEhC1530iRC2sZGErv0joW24mWRPfmva9TsFQt6q00DlKAWC95';
+}

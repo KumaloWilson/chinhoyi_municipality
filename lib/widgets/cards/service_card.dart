@@ -32,7 +32,7 @@ class ServiceCard extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            Get.toNamed(RoutesHelper.serviceRequestDetailsScreen, arguments: serviceRequest);
+            Get.toNamed(RoutesHelper.serviceRequestDetailsScreen, arguments: [serviceRequest, ref]);
           },
           child: Container(
             padding: const EdgeInsets.all(16),
@@ -71,17 +71,33 @@ class ServiceCard extends StatelessWidget {
                       buildPopUpOption(
                         title: 'View Request',
                         icon: Icons.remove_red_eye_outlined,
-                        onTap: () {},
+                        onTap: () {
+                          Get.toNamed(RoutesHelper.serviceRequestDetailsScreen, arguments: [serviceRequest, ref]);
+                        },
                       ),
 
-                      buildPopUpOption(
+                      if(serviceRequest.status == 'Open' || serviceRequest.status == 'In Progress')buildPopUpOption(
+                        title: 'Mark as Resolved',
+                        icon: Icons.check,
+                        onTap: () async{
+                          await ServiceRequestHelper.validateAndUpdateRequest(
+                              requestID: serviceRequest.requestId,
+                              request: serviceRequest.copyWith(
+                                  status: 'Resolved'
+                              ),
+                              ref: ref
+                          );
+                        },
+                      ),
+
+                      if(serviceRequest.status == 'Open' || serviceRequest.status == 'In Progress')buildPopUpOption(
                         title: 'Close Request',
                         icon: Icons.close,
                         onTap: () async{
                           await ServiceRequestHelper.validateAndUpdateRequest(
                             requestID: serviceRequest.requestId,
                             request: serviceRequest.copyWith(
-                              status: 'Close'
+                              status: 'Closed'
                             ),
                             ref: ref
                           );

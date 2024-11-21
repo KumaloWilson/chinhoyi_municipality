@@ -14,6 +14,7 @@ PaymentHistory _$PaymentHistoryFromJson(Map<String, dynamic> json) =>
       paymentDate: DateTime.parse(json['paymentDate'] as String),
       referenceNumber: json['referenceNumber'] as String,
       status: json['status'] as String,
+      reason: json['reason'] as String,
     );
 
 Map<String, dynamic> _$PaymentHistoryToJson(PaymentHistory instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$PaymentHistoryToJson(PaymentHistory instance) =>
       'paymentDate': instance.paymentDate.toIso8601String(),
       'referenceNumber': instance.referenceNumber,
       'status': instance.status,
+      'reason': instance.reason,
     };
