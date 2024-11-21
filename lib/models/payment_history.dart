@@ -10,6 +10,7 @@ class PaymentHistory {
   final DateTime paymentDate;     // Date the payment was made
   final String referenceNumber;   // Reference number provided by the payment processor
   final String status;            // Payment status (Completed, Pending, Failed)
+  final String reason;            // Payment status (Completed, Pending, Failed)
 
   PaymentHistory({
     required this.paymentId,
@@ -18,6 +19,7 @@ class PaymentHistory {
     required this.paymentDate,
     required this.referenceNumber,
     required this.status,
+    required this.reason
   });
 
   // JSON serialization methods

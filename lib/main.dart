@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
+import 'package:municipality/core/configs.dart';
 import 'package:municipality/core/constants/color_constants.dart';
 import 'package:municipality/views/not_found/not_found_screen.dart';
 import 'core/utils/routes.dart';
@@ -18,6 +20,9 @@ Future<void> _setup() async {
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform
   );
+
+  Stripe.publishableKey= SecretsConfig.publishableKey;
+  await Stripe.instance.applySettings();
 }
 
 class Alpha extends StatelessWidget {

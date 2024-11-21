@@ -81,9 +81,13 @@ class RoutesHelper {
     GetPage(
         name: serviceRequestDetailsScreen,
         page: () {
-          final ServiceRequest request = Get.arguments as ServiceRequest;
 
-          return ServiceRequestDetailsScreen(serviceRequest: request);
+          final args = Get.arguments as List;
+
+          final ServiceRequest request = args[0] as ServiceRequest;
+          final WidgetRef ref = args[1] as WidgetRef;
+
+          return ServiceRequestDetailsScreen(serviceRequest: request, ref: ref,);
         }),
 
     GetPage(
