@@ -35,7 +35,7 @@ class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> w
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: suburbs.length, vsync: this);
+    _tabController = TabController(length: suburbs.length + 1, vsync: this);
   }
 
   @override
@@ -101,7 +101,7 @@ class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> w
                     Expanded(
                       flex: 10,
                       child: CustomTextField(
-                        labelText: 'Find Resident',
+                        labelText: 'Find Residence',
                         prefixIcon: const Icon(Icons.search),
                         controller: _searchTextEditingController,
                         onChanged: (value) {
@@ -146,7 +146,7 @@ class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> w
     );
   }
 
-  Widget _buildContent(List<Resident> users) {
+  Widget _buildContent(List<Resident> residences) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -175,22 +175,32 @@ class _ManageResidentsScreenState extends ConsumerState<ManageResidentsScreen> w
               fontWeight: FontWeight.bold,
             ),
             tabAlignment: TabAlignment.start,
-            tabs: suburbs.map((suburb) => Tab(text: suburb)).toList(),
+            tabs: [
+              const Tab(text: "All"),
+              ...suburbs.map((suburb) => Tab(text: suburb)),
+            ],
           ),
           Expanded(
             child: TabBarView(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               controller: _tabController,
-              children: suburbs.map((suburb) {
-                return ResidentTab(
+              children: [
+                ResidentTab(
                   searchTerm: searchTerm,
-                  users: users.where((resident) => resident.property.suburb == suburb).toList(),
-                );
-              }).toList(),
+                  residences: residences,
+                ),
+                ...suburbs.map((suburb) {
+                  return ResidentTab(
+                    searchTerm: searchTerm,
+                    residences: residences.where((resident) => resident.property.suburb == suburb).toList(),
+                  );
+                }),
+              ],
             ),
           ),
         ],
       ),
     );
   }
+
 }

@@ -84,7 +84,7 @@ class _StaffManageServiceRequestsScreenState extends ConsumerState<ResidentManag
                     Expanded(
                       flex: 10,
                       child: CustomTextField(
-                        labelText: 'Find Resident',
+                        labelText: 'Find Service Request',
                         prefixIcon: const Icon(Icons.search),
                         controller: _searchTextEditingController,
                         onChanged: (value) {
@@ -141,6 +141,7 @@ class _StaffManageServiceRequestsScreenState extends ConsumerState<ResidentManag
   Widget _buildContent({required List<ServiceRequest> serviceRequests, required Resident resident}) {
     return ResidentServicesRequestsTab(
       searchTerm: searchTerm,
+      ref: ref,
       requests: serviceRequests.where((request) => request.residentAddress == "${resident.property.houseNumber} ${resident.property.suburb}").toList()
     );
   }

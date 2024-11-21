@@ -5,10 +5,10 @@ import '../../../../../widgets/cards/residents_card.dart';
 
 class ResidentTab extends StatefulWidget {
   final String searchTerm;
-  final List<Resident> users;
+  final List<Resident> residences;
   const ResidentTab({
     super.key,
-    required this.users,
+    required this.residences,
     required this.searchTerm,
   });
 
@@ -19,27 +19,33 @@ class ResidentTab extends StatefulWidget {
 class _ResidentTabState extends State<ResidentTab> {
   @override
   Widget build(BuildContext context) {
-    if (widget.users.isEmpty) {
-      return const Center(child: Text('No Residents found'));
+    if (widget.residences.isEmpty) {
+      return const Center(child: Text('No Residences found'));
     }
 
-    final filteredUsers = widget.users.where((resident) {
-      final nameMatch = resident.firstName.toLowerCase().contains(widget.searchTerm.toLowerCase());
-      final lastNameMatch = resident.lastName.toLowerCase().contains(widget.searchTerm.toLowerCase());
+    final filteredUsers = widget.residences.where((resident) {
+      String fullName = "${resident.firstName} ${resident.lastName}";
+      String reverseFullName = "${resident.lastName} ${resident.firstName}";
+      String address = "${resident.property.houseNumber} ${resident.property.suburb}";
+      String reverseAddress = "${resident.property.suburb} ${resident.property.houseNumber}";
+
+      
+      final nameMatch = fullName.toLowerCase().contains(widget.searchTerm.toLowerCase()) || reverseFullName.toLowerCase().contains(widget.searchTerm.toLowerCase());
+      final addressMatch = address.toLowerCase().contains(widget.searchTerm.toLowerCase()) || reverseAddress.toLowerCase().contains(widget.searchTerm.toLowerCase());
       final emailMatch = resident.email.toLowerCase().contains(widget.searchTerm.toLowerCase());
-      return nameMatch || emailMatch || lastNameMatch;
+      return nameMatch || emailMatch || addressMatch;
     }).toList();
 
     if (filteredUsers.isEmpty) {
-      return const Center(child: Text('No matching resident found.'));
+      return const Center(child: Text('No matching residence found.'));
     }
 
     return ListView.builder(
       itemCount: filteredUsers.length,
       physics: const BouncingScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
-        final user = filteredUsers[index];
-        return ResidentCard(resident: user);
+        final residence = filteredUsers[index];
+        return ResidentCard(residence: residence);
       },
     );
   }

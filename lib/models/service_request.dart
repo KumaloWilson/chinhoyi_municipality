@@ -27,4 +27,27 @@ class ServiceRequest {
   // JSON serialization methods
   factory ServiceRequest.fromJson(Map<String, dynamic> json) => _$ServiceRequestFromJson(json);
   Map<String, dynamic> toJson() => _$ServiceRequestToJson(this);
+
+  // CopyWith method
+  ServiceRequest copyWith({
+    String? requestId,
+    String? residentAddress,
+    String? description,
+    String? category,
+    DateTime? requestDate,
+    String? status,
+    DateTime? resolutionDate,
+    String? resolutionNotes,
+  }) {
+    return ServiceRequest(
+      requestId: requestId ?? this.requestId,
+      residentAddress: residentAddress ?? this.residentAddress,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      requestDate: requestDate ?? this.requestDate,
+      status: status ?? this.status,
+      resolutionDate: resolutionDate ?? this.resolutionDate,
+      resolutionNotes: resolutionNotes ?? this.resolutionNotes,
+    );
+  }
 }

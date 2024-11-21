@@ -157,12 +157,14 @@ class _StaffManageServiceRequestsScreenState extends ConsumerState<StaffManageSe
                   // For the "All" tab, show all service requests
                   return ResidentServicesRequestsTab(
                     searchTerm: searchTerm,
+                    ref: ref,
                     requests: serviceRequests,
                   );
                 } else {
                   // For other tabs, filter by suburb
                   return ResidentServicesRequestsTab(
                     searchTerm: searchTerm,
+                    ref: ref,
                     requests: serviceRequests.where((request) => request.residentAddress.contains(suburb)).toList(),
                   );
                 }
