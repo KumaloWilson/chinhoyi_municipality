@@ -187,30 +187,27 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                  'price_data': {
                                    'currency': 'usd',
                                    'product_data': {'name': 'Water Bill Payment'},
-                                   'unit_amount': (0.7 * amount) * 100,
+                                   'unit_amount': (0.7 * amount * 100).round(),
                                  },
                                  'quantity': 1,
                                },
-
                                {
                                  'price_data': {
                                    'currency': 'usd',
                                    'product_data': {'name': 'Sewage'},
-                                   'unit_amount': (0.2 * amount) * 100,
+                                   'unit_amount': (0.2 * amount * 100).round(),
                                  },
                                  'quantity': 1,
                                },
-
                                {
                                  'price_data': {
                                    'currency': 'usd',
                                    'product_data': {'name': 'Bins'},
-                                   'unit_amount': (0.1 * amount) * 100,
+                                   'unit_amount': (0.1 * amount * 100).round(),
                                  },
                                  'quantity': 1,
                                },
                              ];
-
 
                              await PaymentServices.handleWebCheckout(email: _emailController.text, cartItems: cartItems);
 
