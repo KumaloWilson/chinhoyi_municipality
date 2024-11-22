@@ -8,6 +8,7 @@ import 'package:municipality/views/auth/signup.dart';
 import 'package:municipality/views/auth/staff_login_page.dart';
 import 'package:municipality/views/auth/staff_sign_up.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/payment_screen.dart';
+import 'package:municipality/views/sidebarx_feat/pages/resident_pages/payment_successful.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/service_request_details.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/add_announcement_screen.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/add_user.dart';
@@ -46,6 +47,7 @@ class RoutesHelper {
   static String addServiceRequestScreen = '/addServiceRequest';
   static String addAnnouncementScreen = '/addAnnouncement';
   static String paymentScreen = '/makePayment';
+  static String successfulPaymentScreen = '/paymentSuccessful';
 
   static List<GetPage> routes = [
     GetPage(
@@ -73,6 +75,7 @@ class RoutesHelper {
     GetPage(name: splashScreen, page: () => const SplashScreen()),
     GetPage(name: addStaffScreen, page: () => const AddStaffScreen()),
     GetPage(name: paymentScreen, page: () => const PaymentScreen()),
+    GetPage(name: successfulPaymentScreen, page: () => const PaymentSuccessful()),
     GetPage(
         name: residentDetailsScreen,
         page: () {
