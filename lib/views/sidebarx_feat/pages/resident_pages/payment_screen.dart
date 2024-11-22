@@ -209,7 +209,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                },
                              ];
 
-
                              await PaymentServices.handleWebCheckout(email: _emailController.text, cartItems: cartItems);
 
                            },

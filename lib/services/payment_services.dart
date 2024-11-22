@@ -149,8 +149,6 @@ class PaymentServices {
     );
   }
 
-
-  ///HANDLE WEB CHECKOUT
   static Future<APIResponse<void>> handleWebCheckout({required String email, required List<dynamic> cartItems}) async {
     try {
       final response = await http.post(
@@ -198,6 +196,4 @@ class PaymentServices {
       );
     }
   }
-
-
 }
