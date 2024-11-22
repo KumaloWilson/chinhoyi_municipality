@@ -11,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/snackbar/custom_snackbar.dart';
 
-class PaymentServices {
+class StripeServices {
   /// Displays the payment sheet to the user
   static Future<void> showPaymentSheet() async {
     try {

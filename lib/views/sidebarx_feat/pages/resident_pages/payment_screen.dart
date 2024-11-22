@@ -5,12 +5,13 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:municipality/core/constants/color_constants.dart';
 import 'package:municipality/core/constants/local_image_constants.dart';
 import 'package:municipality/core/utils/logs.dart';
-import 'package:municipality/services/payment_services.dart';
 import 'package:municipality/widgets/cards/payment_method.dart';
 import 'package:municipality/widgets/custom_button/general_button.dart';
 import 'package:municipality/widgets/custom_dropdown.dart';
 import 'package:municipality/widgets/snackbar/custom_snackbar.dart';
 import 'package:municipality/widgets/text_fields/custom_text_field.dart';
+
+import '../../../../services/stripe_services.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -289,7 +290,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                });
 
                                // Call the payment service
-                               await PaymentServices.handleWebCheckout(
+                               await StripeServices.handleWebCheckout(
                                  email: _emailController.text,
                                  cartItems: cartItems,
                                ).then((response){

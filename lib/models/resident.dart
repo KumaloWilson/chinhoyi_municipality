@@ -98,8 +98,6 @@ class Resident {
     Property? property,
     List<FamilyMember>? familyMembers,
     String? paymentMethod,
-    List<PaymentHistory>? paymentHistory,
-    List<ServiceRequest>? serviceRequests,
     List<UtilityAccount>? utilityAccounts,
     String? employmentStatus,
     String? employer,

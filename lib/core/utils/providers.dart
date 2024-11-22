@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:municipality/models/payment_history.dart';
 import 'package:municipality/models/resident.dart';
 import 'package:municipality/models/service_request.dart';
 import 'package:municipality/models/staff_profile.dart';
+import 'package:municipality/state/payments_history_notifier.dart';
 import 'package:municipality/state/resident_notifier.dart';
 import 'package:municipality/state/resident_profile_notifier.dart';
+import 'package:municipality/state/revenue_notifier.dart';
 import 'package:municipality/state/service_requests_notifier.dart';
 import 'package:municipality/state/staff_profile_notifier.dart';
 import '../../global/global.dart';
@@ -29,6 +32,19 @@ class ProviderUtils {
   static final residentsProvider = StateNotifierProvider<ResidentsNotifier, AsyncValue<List<Resident>>>(
       (ref) {
     return ResidentsNotifier();
+  });
+
+
+  static final revenuesProvider = StateNotifierProvider<RevenueNotifier, AsyncValue<List<PaymentHistory>>>(
+          (ref) {
+        return RevenueNotifier();
+      });
+
+
+
+  static final paymentHistoryProvider = StateNotifierProvider.family<PaymentsHistoryNotifier,
+      AsyncValue<List<PaymentHistory>>, String>((ref, profileEmail) {
+    return PaymentsHistoryNotifier(profileEmail: profileEmail);
   });
 
 
