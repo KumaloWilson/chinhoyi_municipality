@@ -4,28 +4,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:municipality/core/utils/routes.dart';
-import 'package:municipality/repository/helpers/finances_helper.dart';
-
 import '../../../../core/constants/color_constants.dart';
 import '../../../../core/utils/providers.dart';
-import '../../../../models/resident.dart';
+import '../../../../models/payment_history.dart';
 import '../../../../widgets/error_widgets/dashboard_error.dart';
 import '../../../../widgets/placeholders/dashboard.dart';
 
 class StaffDashboard extends ConsumerStatefulWidget {
-  const StaffDashboard({Key? key}) : super(key: key);
+  const StaffDashboard({super.key});
 
   @override
   ConsumerState<StaffDashboard> createState() => _StaffDashboardState();
 }
 
 class _StaffDashboardState extends ConsumerState<StaffDashboard> {
-  final List<double> revenueData = [1000, 1200, 1300, 1500, 1400, 1600];
   final List<double> waterUsageData = [60, 70, 65, 80, 75, 85];
 
   @override
   Widget build(BuildContext context) {
     final residentsState = ref.watch(ProviderUtils.residentsProvider);
+    final revenueState = ref.watch(ProviderUtils.revenuesProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -34,110 +32,183 @@ class _StaffDashboardState extends ConsumerState<StaffDashboard> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Dashboard',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       body: residentsState.when(
-        data: (residents){
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Overview Cards
-                  Row(
+        data: (residents) {
+          return revenueState.when(
+            data: (revenue) {
+              final totalRevenue = revenue.fold<double>(0, (sum, payment) => sum + payment.amountTotal);
+
+              final monthlyRevenue = revenue.where((payment) {
+                final paymentDate = payment.timestamp.toDate(); // Convert Timestamp to DateTime
+                return paymentDate.month == DateTime.now().month && paymentDate.year == DateTime.now().year;
+              }).fold<double>(0, (sum, payment) => sum + payment.amountTotal);
+
+
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(child: _buildInfoCard('Total Customers', residents.length.toString(), Icons.people, Colors.blue)),
-                      const SizedBox(width: 16),
-                      Expanded(child: _buildInfoCard('Active Accounts', residents.where((Resident resident) => !resident.isDisabled).toList().length.toString(), Icons.account_balance, Pallete.primaryColor)),
-                      const SizedBox(width: 16),
-                      Expanded(child: _buildInfoCard('Monthly Revenue', '\$12,000', Icons.attach_money, Colors.purple)),
-                      const SizedBox(width: 16),
-                      Expanded(child: _buildInfoCard('Monthly Revenue', "\$${FinancesHelper.calculateTotalMonthlyBills(residents: residents).toString()}", Icons.arrow_circle_down, Colors.redAccent)),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  // Graph Section
-                  Row(
-                    children: [
-                      Expanded(child: _buildCard(child: _buildRevenueChart())),
-                      const SizedBox(width: 16),
-                      Expanded(child: _buildCard(child: _buildWaterUsageChart())),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  // Customer Management & Quick Actions
-                  _buildCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Customer Management', style: Theme.of(context).textTheme.headlineSmall),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      // Overview Cards
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildInfoCard(
+                              'Total Customers',
+                              residents.length.toString(),
+                              Icons.people,
+                              Colors.blue,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildInfoCard(
+                              'Active Accounts',
+                              residents.where((resident) => !resident.isDisabled).length.toString(),
+                              Icons.account_balance,
+                              Pallete.primaryColor,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildInfoCard(
+                              'Monthly Revenue',
+                              '\$${monthlyRevenue.toStringAsFixed(2)}',
+                              Icons.attach_money,
+                              Colors.purple,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildInfoCard(
+                              'Total Revenue',
+                              '\$${totalRevenue.toStringAsFixed(2)}',
+                              Icons.money,
+                              Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      // Graph Section
+                      Row(
+                        children: [
+                          Expanded(child: _buildCard(child: _buildRevenueChart(revenue))),
+                          const SizedBox(width: 16),
+                          Expanded(child: _buildCard(child: _buildWaterUsageChart())),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      // Customer Management & Quick Actions
+                      _buildCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildQuickActionButton(
-                              label: 'Add Customer',
-                              icon:  Icons.person_add,
-                              color:  Colors.blue,
-                              onTap: () {
-                                Get.toNamed(RoutesHelper.addResidentsScreen, arguments: ref);
-                              },
-                            ),
-                            _buildQuickActionButton(
-                               label:  'Manage Accounts',
-                               icon:  Icons.manage_accounts,
-                               color:  Colors.orange),
-                            _buildQuickActionButton(
-                               label:  'View Reports',
-                               icon:  Icons.bar_chart,
-                               color:  Colors.green
-                            ),
-                            _buildQuickActionButton(
-                              label:   'Support',
-                              icon:   Icons.support_agent,
-                              color:   Colors.purple
+                            Text('Customer Management', style: Theme.of(context).textTheme.headlineSmall),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                _buildQuickActionButton(
+                                  label: 'Add Customer',
+                                  icon: Icons.person_add,
+                                  color: Colors.blue,
+                                  onTap: () {
+                                    Get.toNamed(RoutesHelper.addResidentsScreen, arguments: ref);
+                                  },
+                                ),
+                                _buildQuickActionButton(
+                                  label: 'Manage Accounts',
+                                  icon: Icons.manage_accounts,
+                                  color: Colors.orange,
+                                ),
+                                _buildQuickActionButton(
+                                  label: 'View Reports',
+                                  icon: Icons.bar_chart,
+                                  color: Colors.green,
+                                ),
+                                _buildQuickActionButton(
+                                  label: 'Support',
+                                  icon: Icons.support_agent,
+                                  color: Colors.purple,
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Recent Transactions
-                  _buildCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Recent Transactions', style: Theme.of(context).textTheme.headlineSmall),
-                        const SizedBox(height: 16),
-                        _buildTransactionItem('Water Bill Payment', 'Nov 05, 2024', -150.00),
-                        _buildTransactionItem('Penalty Fee', 'Nov 01, 2024', -25.00),
-                        _buildTransactionItem('Bill Payment', 'Oct 15, 2024', -145.00),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-        error: (error, stakeTrace){
-          return DashboardErrorWidget(
-              errorMessage: error.toString(),
-              onRetry: (){
+                      ),
+                      const SizedBox(height: 24),
+                      // Recent Transactions
+                      _buildCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Recent Transactions', style: Theme.of(context).textTheme.headlineSmall),
+                            const SizedBox(height: 16),
+                            ...revenue
+                                .take(5) // Show recent 5 transactions
+                                .map((payment) => _buildTransactionItem(
+                              'Payment: ${payment.paymentMethod}',
+                              DateFormat.yMMMd().format(payment.timestamp.toDate()), // Convert Timestamp to DateTime
+                              payment.amountTotal,
+                            )
+                            ),
 
-              }
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            error: (error, stackTrace) => DashboardErrorWidget(
+              errorMessage: error.toString(),
+              onRetry: () => ref.refresh(ProviderUtils.revenuesProvider),
+            ),
+            loading: () => const DashboardPlaceholder(),
           );
         },
-        loading:() {
-          return const DashboardPlaceholder();
-        }
+        error: (error, stackTrace) {
+          return DashboardErrorWidget(
+            errorMessage: error.toString(),
+            onRetry: () => ref.refresh(ProviderUtils.residentsProvider),
+          );
+        },
+        loading: () => const DashboardPlaceholder(),
       ),
+    );
+  }
+
+  Widget _buildRevenueChart(List<PaymentHistory> revenue) {
+    final revenueData = revenue.map((payment) => payment.amountTotal).toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Revenue (Last 6 Months)', style: Theme.of(context).textTheme.headlineSmall),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 200,
+          child: LineChart(
+            LineChartData(
+              lineBarsData: [
+                LineChartBarData(
+                  spots: revenueData.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList(),
+                  isCurved: true,
+                  gradient: const LinearGradient(colors: [Colors.blue, Colors.purple]),
+                  belowBarData: BarAreaData(show: true, gradient: LinearGradient(colors: [Colors.blue.withOpacity(0.3), Colors.purple.withOpacity(0.1)])),
+                  dotData: const FlDotData(show: false),
+                  barWidth: 4,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -182,6 +253,7 @@ class _StaffDashboardState extends ConsumerState<StaffDashboard> {
     );
   }
 
+
   Widget _buildTransactionItem(String title, String date, double amount) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -207,33 +279,6 @@ class _StaffDashboardState extends ConsumerState<StaffDashboard> {
     );
   }
 
-  Widget _buildRevenueChart() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Revenue (Last 6 Months)', style: Theme.of(context).textTheme.headlineSmall),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 200,
-          child: LineChart(
-            LineChartData(
-              lineBarsData: [
-                LineChartBarData(
-                  spots: revenueData.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList(),
-                  isCurved: true,
-                  gradient: LinearGradient(colors: [Colors.blue, Colors.purple]),
-                  belowBarData: BarAreaData(show: true, gradient: LinearGradient(colors: [Colors.blue.withOpacity(0.3), Colors.purple.withOpacity(0.1)])),
-                  dotData: FlDotData(show: false),
-                  barWidth: 4,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildWaterUsageChart() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +295,7 @@ class _StaffDashboardState extends ConsumerState<StaffDashboard> {
                   barRods: [
                     BarChartRodData(
                       toY: e.value,
-                      gradient: LinearGradient(colors: [Colors.blueAccent, Colors.lightBlueAccent]),
+                      gradient: const LinearGradient(colors: [Colors.blueAccent, Colors.lightBlueAccent]),
                       width: 16,
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -274,4 +319,5 @@ class _StaffDashboardState extends ConsumerState<StaffDashboard> {
       ),
     );
   }
+
 }

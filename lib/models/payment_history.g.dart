@@ -8,22 +8,22 @@ part of 'payment_history.dart';
 
 PaymentHistory _$PaymentHistoryFromJson(Map<String, dynamic> json) =>
     PaymentHistory(
-      paymentId: json['paymentId'] as String,
-      amount: (json['amount'] as num).toDouble(),
+      paymentIntentId: json['paymentIntentId'] as Map<String, dynamic>,
+      amountTotal: (json['amountTotal'] as num).toDouble(),
       paymentMethod: json['paymentMethod'] as String,
-      paymentDate: DateTime.parse(json['paymentDate'] as String),
-      referenceNumber: json['referenceNumber'] as String,
+      timestamp: PaymentHistory._timestampFromJson(json['timestamp']),
+      email: json['email'] as String,
       status: json['status'] as String,
-      reason: json['reason'] as String,
+      currency: json['currency'] as String,
     );
 
 Map<String, dynamic> _$PaymentHistoryToJson(PaymentHistory instance) =>
     <String, dynamic>{
-      'paymentId': instance.paymentId,
-      'amount': instance.amount,
+      'paymentIntentId': instance.paymentIntentId,
+      'amountTotal': instance.amountTotal,
       'paymentMethod': instance.paymentMethod,
-      'paymentDate': instance.paymentDate.toIso8601String(),
-      'referenceNumber': instance.referenceNumber,
+      'timestamp': PaymentHistory._timestampToJson(instance.timestamp),
+      'email': instance.email,
       'status': instance.status,
-      'reason': instance.reason,
+      'currency': instance.currency,
     };

@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:municipality/core/utils/logs.dart';
 import 'package:municipality/widgets/error_widgets/dashboard_error.dart';
 import 'package:municipality/widgets/placeholders/dashboard.dart';
 import '../../../../core/constants/color_constants.dart';
 import '../../../../core/utils/providers.dart';
-
-
-
 
 class CustomerDashBoard extends ConsumerStatefulWidget {
   const CustomerDashBoard({super.key});
@@ -26,6 +24,7 @@ class _CustomerDashBoardState extends ConsumerState<CustomerDashBoard> {
   @override
   Widget build(BuildContext context) {
     final residentState = ref.watch(ProviderUtils.residentProfileProvider(user!.email!));
+    final paymentHistoryState = ref.watch(ProviderUtils.paymentHistoryProvider(user!.email!));
 
     return Scaffold(
       appBar: AppBar(
@@ -34,103 +33,112 @@ class _CustomerDashBoardState extends ConsumerState<CustomerDashBoard> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Customer Dashboard',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       body: residentState.when(
-          data: (resident){
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        data: (resident) => SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Account Summary Card
+                _buildCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Account Summary', style: Theme.of(context).textTheme.headlineMedium),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildInfoColumn('Account Number', resident.accountNumber),
+                          _buildInfoColumn('Current Balance',
+                              '\$${resident.balances != null ? resident.balances!.last.currentBalance : 0}'),
+                          _buildInfoColumn(
+                            'Bill Month',
+                            resident.balances != null
+                                ? resident.balances!.last.month
+                                : DateFormat.MMMM().format(DateTime.now()),
+                          ),
+                          _buildInfoColumn('Status', resident.accountStatus),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Charts Row
+                Row(
                   children: [
-                    // Account Summary Card
-                    _buildCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Account Summary', style: Theme.of(context).textTheme.headlineMedium),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _buildInfoColumn('Account Number', resident.accountNumber),
-                              _buildInfoColumn('Current Balance', '\$${resident.balances != null ? resident.balances!.last.currentBalance : 0}'),
-                              _buildInfoColumn('Bill Month', resident.balances != null ? resident.balances!.last.month : DateFormat.MMMM().format(DateTime.now()),),
-                              _buildInfoColumn('Status', 'Active'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    // Charts Row
-                    Row(
-                      children: [
-                        Expanded(child: _buildCard(child: _buildWaterUsageChart())),
-                        const SizedBox(width: 16),
-                        Expanded(child: _buildCard(child: _buildBillingChart())),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    // Quick Actions
-                    _buildCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Quick Actions', style: Theme.of(context).textTheme.headlineSmall),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              _buildQuickActionButton('Pay Bill', Icons.payment, Colors.green),
-                              _buildQuickActionButton('Report Issue', Icons.report_problem, Colors.orange),
-                              _buildQuickActionButton('Download Bill', Icons.download, Colors.blue),
-                              _buildQuickActionButton('Support', Icons.support_agent, Colors.purple),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    // Recent Transactions
-                    _buildCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Recent Transactions', style: Theme.of(context).textTheme.headlineSmall),
-                          const SizedBox(height: 16),
-                          _buildTransactionItem('Water Bill Payment', 'Oct 15, 2024', -150.00),
-                          _buildTransactionItem('Late Payment Fee', 'Oct 10, 2024', -25.00),
-                          _buildTransactionItem('Bill Payment', 'Sep 15, 2024', -145.00),
-                        ],
-                      ),
-                    ),
+                    Expanded(child: _buildCard(child: _buildWaterUsageChart())),
+                    const SizedBox(width: 16),
+                    Expanded(child: _buildCard(child: _buildBillingChart())),
                   ],
                 ),
-              ),
-            );
+                const SizedBox(height: 24),
+                // Quick Actions
+                _buildCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Quick Actions', style: Theme.of(context).textTheme.headlineSmall),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _buildQuickActionButton('Pay Bill', Icons.payment, Colors.green),
+                          _buildQuickActionButton('Report Issue', Icons.report_problem, Colors.orange),
+                          _buildQuickActionButton('Download Bill', Icons.download, Colors.blue),
+                          _buildQuickActionButton('Support', Icons.support_agent, Colors.purple),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Recent Transactions
+                paymentHistoryState.when(
+                  data: (paymentHistory) => _buildCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Recent Transactions', style: Theme.of(context).textTheme.headlineSmall),
+                        const SizedBox(height: 16),
+                        ...paymentHistory.take(5) // Show recent 5 transactions
+                            .map((payment) => _buildTransactionItem(
+                          'Payment: ${payment.paymentMethod}',
+                          DateFormat.yMMMd().format(payment.timestamp.toDate()), // Convert Timestamp to DateTime
+                          payment.amountTotal,
+                        )
+                        ),
+                      ],
+                    ),
+                  ),
+                  loading: () => const CircularProgressIndicator(),
+                  error: (error, stackTrace){
+                    DevLogs.logError(error.toString());
+                    return Text(
+                      'Error loading payments: $error',
+                      style: TextStyle(color: Colors.red),
+                    );
+                  }
+                ),
+              ],
+            ),
+          ),
+        ),
+        error: (error, stackTrace) => DashboardErrorWidget(
+          errorMessage: error.toString(),
+          onRetry: () {
+            // Retry logic
           },
-          error: (error, stakeTrace){
-            return DashboardErrorWidget(
-                errorMessage: error.toString(),
-                onRetry: (){
-
-                }
-            );
-          },
-          loading:() {
-            return const DashboardPlaceholder();
-          }
+        ),
+        loading: () => const DashboardPlaceholder(),
       ),
     );
   }
-
-
 
   Widget _buildCard({required Widget child}) {
     return Card(
@@ -205,10 +213,17 @@ class _CustomerDashBoardState extends ConsumerState<CustomerDashBoard> {
             LineChartData(
               lineBarsData: [
                 LineChartBarData(
-                  spots: waterUsage.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList(),
+                  spots: waterUsage
+                      .asMap()
+                      .entries
+                      .map((e) => FlSpot(e.key.toDouble(), e.value))
+                      .toList(),
                   isCurved: true,
                   gradient: const LinearGradient(colors: [Colors.blue, Colors.purple]),
-                  belowBarData: BarAreaData(show: true, gradient: LinearGradient(colors: [Colors.blue.withOpacity(0.3), Colors.purple.withOpacity(0.1)])),
+                  belowBarData: BarAreaData(
+                    show: true,
+                    gradient: LinearGradient(colors: [Colors.blue.withOpacity(0.3), Colors.purple.withOpacity(0.1)]),
+                  ),
                   dotData: const FlDotData(show: false),
                   barWidth: 4,
                 ),
@@ -237,12 +252,10 @@ class _CustomerDashBoardState extends ConsumerState<CustomerDashBoard> {
                     BarChartRodData(
                       toY: e.value,
                       gradient: LinearGradient(
-                          colors: [
-                            Pallete.primaryColor,
-                            Pallete.primaryColor.withOpacity(
-                              0.6
-                            )
-                          ]
+                        colors: [
+                          Pallete.primaryColor,
+                          Pallete.primaryColor.withOpacity(0.6),
+                        ],
                       ),
                       width: 16,
                       borderRadius: BorderRadius.circular(4),

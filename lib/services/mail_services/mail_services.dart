@@ -11,7 +11,7 @@ class MailServices{
 
   static Future<void> sendEmail({required String recipientEmail, required String recipientUserName, required String emailSubject, required String emailBody}) async {
     String sender = 'kumalowilson900@outlook.com';
-    String password = 'Wily0734?';
+    String password = '';
 
     final smtpServer = hotmail(sender, password);
 
