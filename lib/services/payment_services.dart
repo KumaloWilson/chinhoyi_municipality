@@ -151,7 +151,6 @@ class PaymentServices {
 
 
   ///HANDLE WEB CHECKOUT
-
   static Future<APIResponse<void>> handleWebCheckout({required String email, required List<dynamic> cartItems}) async {
     try {
       final response = await http.post(
@@ -182,6 +181,8 @@ class PaymentServices {
         );
       } else {
         CustomSnackBar.showErrorSnackbar(message: 'Failed to Initialize Payment');
+        DevLogs.logError(response.statusCode.toString());
+        DevLogs.logError(response.body.toString());
         return APIResponse(
             success: false,
             message: 'failed'
@@ -189,6 +190,7 @@ class PaymentServices {
       }
     } catch (e) {
       DevLogs.logError(e.toString());
+
       CustomSnackBar.showErrorSnackbar(message: e.toString());
       return APIResponse(
           success: false,
