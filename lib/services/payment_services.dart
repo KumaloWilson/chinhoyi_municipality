@@ -152,10 +152,10 @@ class PaymentServices {
 
   ///HANDLE WEB CHECKOUT
 
-  static Future<void> handleWebCheckout({required String email, required List<dynamic> cartItems}) async {
+  static Future<APIResponse<void>> handleWebCheckout({required String email, required List<dynamic> cartItems}) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3000/checkout'),
+        Uri.parse('https://municipality-payment-gateway.onrender.com/checkout'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'line_items': cartItems,
@@ -173,14 +173,27 @@ class PaymentServices {
             webOnlyWindowName: '_self',
           );
         }
+
+        DevLogs.logSuccess('PAYMENT SUCCESSFUL');
+
+        return APIResponse(
+          success: true,
+          message: 'successful'
+        );
       } else {
         CustomSnackBar.showErrorSnackbar(message: 'Failed to Initialize Payment');
-        return;
+        return APIResponse(
+            success: false,
+            message: 'failed'
+        );
       }
     } catch (e) {
       DevLogs.logError(e.toString());
       CustomSnackBar.showErrorSnackbar(message: e.toString());
-      return;
+      return APIResponse(
+          success: false,
+          message: 'failed'
+      );
     }
   }
 
