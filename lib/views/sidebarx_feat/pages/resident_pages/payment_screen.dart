@@ -143,13 +143,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                          CustomTextField(
                            controller: _emailController,
                            labelText: 'Email Address',
-                           prefixIcon: Icon(
+                           prefixIcon: const Icon(
                                FontAwesomeIcons.moneyBill
                            ),
                          ),
 
 
-                         SizedBox(
+                         const SizedBox(
                            height: 16,
                          ),
 
@@ -163,18 +163,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                            items: const ['USD', 'ZWG'],
                          ),
 
-                         SizedBox(
+                         const SizedBox(
                            height: 16,
                          ),
 
                          CustomTextField(
                            controller: _amountController,
                            labelText: 'Amount (0.00)',
-                           prefixIcon: Icon(
+                           prefixIcon: const Icon(
                              FontAwesomeIcons.moneyBill
                            ),
                          ),
-                         SizedBox(
+                         const SizedBox(
                            height: 32,
                          ),
 
