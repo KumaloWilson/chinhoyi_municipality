@@ -539,14 +539,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.1"
-  flutter_stripe:
-    dependency: "direct main"
-    description:
-      name: flutter_stripe
-      sha256: "06d7d8ac853470b7c9a9ed81f9fccafaf35f417a151e1b7ddcded56113aadf6f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.3.0"
   flutter_stripe_web:
     dependency: "direct main"
     description:
@@ -622,7 +614,7 @@ packages:
     source: hosted
     version: "2.3.2"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010
@@ -805,14 +797,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
-  localregex:
-    dependency: transitive
-    description:
-      name: localregex
-      sha256: a58d6b44f5c61b27a2f2088f596fd04935df3695a17ceb39dc2f33d8d118bbff
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.7"
   logger:
     dependency: "direct main"
     description:
@@ -845,6 +829,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.2-main.4"
+  mailer:
+    dependency: "direct main"
+    description:
+      name: mailer
+      sha256: "21fde1497c79f402cb5fa7c50abd58927d360139e492546c941ee10767684fac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.0"
   matcher:
     dependency: transitive
     description:
@@ -965,14 +957,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
-  paynow:
-    dependency: "direct main"
-    description:
-      name: paynow
-      sha256: eac5908b6631698e76c78911ccca97a27d37cf66b3f548c5405b680f69fa59ca
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   petitparser:
     dependency: transitive
     description:
@@ -1021,14 +1005,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
-  pretty_dio_logger:
-    dependency: transitive
-    description:
-      name: pretty_dio_logger
-      sha256: "36f2101299786d567869493e2f5731de61ce130faa14679473b26905a92b6407"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.0"
   pub_semver:
     dependency: transitive
     description:
@@ -1037,6 +1013,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  public_ip_address:
+    dependency: "direct main"
+    description:
+      name: public_ip_address
+      sha256: "03b78fb35f7b683bbefca62c19571405a5f641c9e0277aa4fdd8e47198cc7779"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   pubspec_parse:
     dependency: transitive
     description:
@@ -1250,22 +1234,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  stripe_android:
-    dependency: transitive
-    description:
-      name: stripe_android
-      sha256: bc919b07ba1560b25a69002f9ca67a5973f12bfb96f78033cf9bd6c561f1aa10
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.3.0"
-  stripe_ios:
-    dependency: transitive
-    description:
-      name: stripe_ios
-      sha256: "734a7668babd85a451c8049f0dfa8ca5dc6d80f85600d29732e7fa703dd5ec5e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.3.0"
   stripe_js:
     dependency: transitive
     description:
@@ -1522,6 +1490,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  webview_flutter:
+    dependency: "direct main"
+    description:
+      name: webview_flutter
+      sha256: "889a0a678e7c793c308c68739996227c9661590605e70b1f6cf6b9a6634f7aec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.10.0"
+  webview_flutter_android:
+    dependency: transitive
+    description:
+      name: webview_flutter_android
+      sha256: "285cedfd9441267f6cca8843458620b5fda1af75b04f5818d0441acda5d7df19"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
+  webview_flutter_platform_interface:
+    dependency: transitive
+    description:
+      name: webview_flutter_platform_interface
+      sha256: d937581d6e558908d7ae3dc1989c4f87b786891ab47bb9df7de548a151779d8d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.10.0"
+  webview_flutter_wkwebview:
+    dependency: transitive
+    description:
+      name: webview_flutter_wkwebview
+      sha256: "3be297aa4ca78205abdd284cf55f168c35246c75b3079990ad8ba9d257681a30"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.16.2"
   win32:
     dependency: transitive
     description:

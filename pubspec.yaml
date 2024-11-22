@@ -45,10 +45,12 @@ dependencies:
   tuple: ^2.0.2
   font_awesome_flutter: ^10.7.0
   fl_chart: ^0.69.0
-  paynow: ^4.0.1
   shimmer: ^3.0.0
-  flutter_stripe: ^11.3.0
   flutter_stripe_web: ^6.3.0
+  http: ^1.2.2
+  webview_flutter: ^4.0.0
+  mailer: ^6.2.0
+  public_ip_address: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -62,3 +64,4 @@ flutter:
   assets:
     - assets/images/
     - assets/animations/
+    - assets/stripe/
