@@ -4,8 +4,9 @@ class CustomDropDown extends StatelessWidget {
   final List<String> items;
   final String selectedValue;
   final IconData? prefixIcon;
+  final Color? bgColor;
   final void Function(String?)? onChanged;
-  final bool isEnabled; // New property to enable/disable the dropdown
+  final bool? isEnabled;
 
   const CustomDropDown({
     super.key,
@@ -13,7 +14,8 @@ class CustomDropDown extends StatelessWidget {
     required this.items,
     required this.selectedValue,
     required this.onChanged,
-    required this.isEnabled,
+    this.isEnabled,
+    this.bgColor
   });
 
   @override
@@ -22,21 +24,21 @@ class CustomDropDown extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: isEnabled ? Colors.transparent :Theme.of(context).disabledColor.withOpacity(0.2),
+        color: (isEnabled == null || isEnabled == true) ? bgColor ?? Colors.transparent :Theme.of(context).disabledColor.withOpacity(0.2),
         border: Border.all(
           color: Theme.of(context).disabledColor.withOpacity(0.2),
         ),
       ),
       child: Row(
         children: [
-          Expanded(
+          if(prefixIcon != null)Expanded(
             flex: 1,
             child: Icon(
               prefixIcon,
               color: Theme.of(context).disabledColor,
             ),
           ),
-          const SizedBox(
+          if(prefixIcon != null)const SizedBox(
             width: 8,
           ),
           Expanded(
@@ -54,7 +56,7 @@ class CustomDropDown extends StatelessWidget {
                   ),
                 );
               }).toList(),
-              onChanged: isEnabled ? onChanged : null, // Set onChanged callback based on isEnabled
+              onChanged: (isEnabled == null || isEnabled == true) ? onChanged : null, // Set onChanged callback based on isEnabled
               isExpanded: true,
               underline: const SizedBox(),
               style: const TextStyle(

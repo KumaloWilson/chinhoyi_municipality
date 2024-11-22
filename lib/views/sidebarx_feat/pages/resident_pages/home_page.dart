@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:municipality/animations/fade_in_slide.dart';
 import 'package:municipality/core/constants/color_constants.dart';
 import 'package:municipality/core/constants/local_image_constants.dart';
+import 'package:municipality/core/utils/routes.dart';
 import 'package:municipality/widgets/custom_button/general_button.dart';
 
 class ChinhoyiMunicipalityScreen extends StatefulWidget {
@@ -96,7 +98,9 @@ class _ChinhoyiMunicipalityScreenState extends State<ChinhoyiMunicipalityScreen>
                               child: Transform.scale(
                                 scale: _isPayBillsHovered ? 1.1 : 1.0,
                                 child: GeneralButton(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Get.toNamed(RoutesHelper.paymentScreen);
+                                  },
                                   width: 100,
                                   borderRadius: 10,
                                   boxBorder: Border.all(

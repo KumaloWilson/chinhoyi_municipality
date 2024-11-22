@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stripe Payment</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+    <div id="payment-element">
+    </div>
+
+    <button id="pay-now-btn">
+        PAY NOW
+    </button>
+
+    <script>
+        const stripe = Stripe(
+            "pk_test_51NzbkSE7TNrdBh19rVQFVf5O6asc1nnJSmzBEDhJYW2Ritdbrov0HM4M1Ot67z2x6AdJau63GKmT40BpnI6L48jC00LQWsTgh7"
+        );
+
+        const elements = stripe.elements({
+            clientSecret: "pi_3QNdGkE7TNrdBh191LSGj3C7_secret_3XA4dZfSTCTsw0H5rP4ON2y4j",
+        });
+
+
+        const paymentElement = elements.create('payment');
+        paymentElement.mount("#payment-element");
+
+        document
+            .getElementById("pay-now-btn")
+            .addEventListener("click", async () => {
+                await stripe.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        return_url: "https://www.google.com",
+                    }
+                }).then((data) => {
+                    console.log(data);
+                }).catch((error) => {
+                    console.log(error)
+                })
+            });
+
+        console.log(stripe);
+        console.log(elements);
+    </script>
+</body>
+
+</html>
