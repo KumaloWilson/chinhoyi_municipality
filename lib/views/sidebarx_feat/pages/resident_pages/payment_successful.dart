@@ -36,6 +36,7 @@ class PaymentSuccessful extends StatelessWidget {
             ],
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Lottie.asset(
                   AnimationAsset.successfulAnimation,
