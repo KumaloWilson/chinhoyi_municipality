@@ -122,6 +122,11 @@ class StaffAdminSidebar extends ConsumerWidget {
         ),
 
         const SidebarXItem(
+          icon: Icons.money,
+          label: 'Revenue',
+        ),
+
+        const SidebarXItem(
           icon: Icons.dashboard,
           label: 'Profile',
         ),

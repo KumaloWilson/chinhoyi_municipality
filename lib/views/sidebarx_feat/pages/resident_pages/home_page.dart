@@ -42,7 +42,7 @@ class _ChinhoyiMunicipalityScreenState extends State<ChinhoyiMunicipalityScreen>
                       const Text(
                         'MUNICIPALITY\nOF CHINHOYI',
                         style: TextStyle(
-                          fontSize: 60,
+                          fontSize: 50,
                           fontWeight: FontWeight.bold,
                           height: 1.2,
                         ),

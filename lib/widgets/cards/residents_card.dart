@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:municipality/core/constants/color_constants.dart';
 import 'package:municipality/models/resident.dart';
 import '../../core/utils/routes.dart';
 
@@ -27,17 +28,26 @@ class ResidentCard extends StatelessWidget {
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+
+                  Text(
+                    "${residence.property.houseNumber} ${residence.property.suburb}",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   Text(
                     "${residence.lastName} ${residence.firstName}",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style:const TextStyle(fontSize: 12),
                   ),
                   Text(
                     "${residence.property.houseNumber} ${residence.property.suburb}",
                     style:const TextStyle(fontSize: 12),
                   ),
                   Text(
-                    residence.phoneNumber,
-                    style: const TextStyle(fontSize: 12),
+                    "Current Balance ${residence.balances != null ? residence.balances!.last.currentBalance : 0}",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: residence.balances != null ? (residence.balances!.last.currentBalance < 0 ? Pallete.primaryColor : Colors.redAccent) : Colors.blue
+                    ),
                   ),
                 ],
               ),

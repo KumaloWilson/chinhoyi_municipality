@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:municipality/views/sidebarx_feat/pages/resident_pages/announcements_management.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/dashboard.dart';
+import 'package:municipality/views/sidebarx_feat/pages/staff_pages/edit_profile_screen.dart';
+import 'package:municipality/views/sidebarx_feat/pages/staff_pages/revenue_management.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/service_requests.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_residents.dart';
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_users.dart';
@@ -31,6 +33,10 @@ class AdminTabScreensContainer extends StatelessWidget {
             return const StaffManageServiceRequestsScreen();
           case 4:
             return const AnnouncementManagementScreen();
+          case 5:
+            return const RevenueManagementScreen();
+          case 6:
+            return const StaffProfileScreen();
           default:
             return Text(
               'Not Found',
