@@ -122,6 +122,11 @@ class CustomerSidebar extends ConsumerWidget {
         ),
 
         const SidebarXItem(
+          icon: Icons.money_sharp,
+          label: 'Payments History',
+        ),
+
+        const SidebarXItem(
           icon: Icons.dashboard,
           label: 'Profile',
         ),

@@ -4,20 +4,20 @@ class GeneralButton extends StatelessWidget {
   final Color btnColor;
   final double width;
   final double? height;
-  final double borderRadius;
+  final double? borderRadius;
   final BoxBorder? boxBorder;
   final Widget child;
-  final void Function() onTap;
+  final void Function()? onTap;
 
   const GeneralButton({
     super.key,
     required this.btnColor,
     required this.width,
-    required this.borderRadius,
+    this.borderRadius,
     this.height,
     required this.child,
     this.boxBorder,
-    required this.onTap,
+    this.onTap,
   });
 
 
@@ -32,7 +32,7 @@ class GeneralButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           decoration: BoxDecoration(
               color: btnColor,
-              borderRadius: BorderRadius.circular(borderRadius),
+              borderRadius: BorderRadius.circular(borderRadius ?? 25),
               border: boxBorder),
           child: child),
     );

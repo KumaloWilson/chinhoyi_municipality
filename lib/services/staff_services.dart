@@ -254,7 +254,7 @@ class StaffServices {
 
       final updatedData = updatedProfile.toJson();
 
-      await _firestore.collection('users').doc(docId).update(updatedData);
+      await _firestore.collection('staff').doc(docId).update(updatedData);
 
       // Return a success response
       return APIResponse(

@@ -8,8 +8,8 @@ import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_reside
 import 'package:municipality/views/sidebarx_feat/pages/staff_pages/manage_users.dart';
 import 'package:sidebarx/sidebarx.dart';
 
-class AdminTabScreensContainer extends StatelessWidget {
-  const AdminTabScreensContainer({
+class StaffTabScreensContainer extends StatelessWidget {
+  const StaffTabScreensContainer({
     super.key,
     required this.controller,
   });
@@ -28,14 +28,12 @@ class AdminTabScreensContainer extends StatelessWidget {
           case 1:
             return const ManageResidentsScreen();
           case 2:
-            return const ManageStaffScreen();
-          case 3:
             return const StaffManageServiceRequestsScreen();
-          case 4:
+          case 3:
             return const AnnouncementManagementScreen();
-          case 5:
+          case 4:
             return const RevenueManagementScreen();
-          case 6:
+          case 5:
             return const StaffProfileScreen();
           default:
             return Text(

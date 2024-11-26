@@ -23,16 +23,47 @@ class StaffProfileNotifier extends StateNotifier<AsyncValue<StaffProfile>> {
         state = AsyncValue.data(response.data!);
       } else {
         state = AsyncValue.error(
-            response.message ?? 'Failed to fetch user', StackTrace.current
-        );
+            response.message ?? 'Failed to fetch user', StackTrace.current);
       }
     } catch (e, stackTrace) {
       state = AsyncValue.error('An unexpected error occurred: $e', stackTrace);
     }
   }
 
-  // Update the state with a new profile
-  void updateProfile(StaffProfile updatedProfile) {
+  // Method to update the staff profile
+  Future<void> updateUserProfile(StaffProfile updatedProfile) async {
+    try {
+      // Ensure the state is loaded before updating
+      final currentProfile = state.value;
+      if (currentProfile == null) {
+        state = AsyncValue.error(
+            'Cannot update profile: Current profile is not loaded',
+            StackTrace.current);
+        return;
+      }
+
+      // Call the service to update the profile
+      final response = await StaffServices.updateUserProfile(
+        email: currentProfile.email,
+        updatedProfile: updatedProfile,
+      );
+
+      if (response.success) {
+        // Update the local state with the updated profile
+        state = AsyncValue.data(updatedProfile);
+      } else {
+        // Handle the error response
+        state = AsyncValue.error(
+            response.message ?? 'Failed to update user', StackTrace.current);
+      }
+    } catch (e, stackTrace) {
+      // Handle unexpected exceptions
+      state = AsyncValue.error('An unexpected error occurred: $e', stackTrace);
+    }
+  }
+
+  // Update the state with a new profile directly (for local updates)
+  void updateProfileLocally(StaffProfile updatedProfile) {
     state = AsyncValue.data(updatedProfile);
   }
 }

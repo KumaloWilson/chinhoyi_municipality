@@ -1,26 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:municipality/models/resident.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:municipality/views/sidebarx_feat/pages/staff_pages/tabs/service_requests.dart';
 import 'package:municipality/widgets/cards/family_member_card.dart';
 
 import '../../../../core/constants/color_constants.dart';
+import '../../../../core/utils/providers.dart';
+import '../../../../models/payment_history.dart';
+import '../../../../models/service_request.dart';
+import '../../../../services/billing_services.dart';
 
-class ResidentDetailsScreen extends StatefulWidget {
+class ResidentDetailsScreen extends ConsumerStatefulWidget {
   final Resident resident;
   const ResidentDetailsScreen({super.key, required this.resident});
 
   @override
-  State<ResidentDetailsScreen> createState() => _ResidentDetailsScreenState();
+  ConsumerState<ResidentDetailsScreen> createState() => _ResidentDetailsScreenState();
 }
 
-class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with SingleTickerProviderStateMixin {
+class _ResidentDetailsScreenState extends ConsumerState<ResidentDetailsScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
+  List<PaymentHistory> _allPayments = [];
+  Future<List<PaymentHistory>>? _filteredPayments;
+  String _selectedStatus = 'All';
+  String _selectedPaymentMethod = 'All';
+  String _selectedCurrency = 'All';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+    _fetchAllPayments();
   }
 
   @override
@@ -29,8 +42,162 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
     super.dispose();
   }
 
+  // **Payment Section** - Filter & Display Payments
+  void _fetchAllPayments() async {
+    try {
+      final payments = await BillingServices.fetchResidentPaymentHistory(profileEmail: widget.resident.email);
+      if (payments.success) {
+        setState(() {
+          _allPayments = payments.data!;
+          _filteredPayments = Future.value(_allPayments);
+        });
+      } else {
+        setState(() {
+          _filteredPayments = Future.error(payments.message ?? "Error fetching payments");
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _filteredPayments = Future.error("Error: $e");
+      });
+    }
+  }
+
+  void _filterPayments() {
+    final filtered = _allPayments.where((payment) {
+      final matchesStatus = _selectedStatus == 'All' || payment.status == _selectedStatus;
+      final matchesMethod = _selectedPaymentMethod == 'All' || payment.paymentMethod == _selectedPaymentMethod;
+      final matchesCurrency = _selectedCurrency == 'All' || payment.currency == _selectedCurrency;
+      return matchesStatus && matchesMethod && matchesCurrency;
+    }).toList();
+
+    setState(() {
+      _filteredPayments = Future.value(filtered);
+    });
+  }
+
+  Widget _buildPaymentsTab() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Filters Section
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildDropdown('Status', _selectedStatus, (value) {
+                setState(() {
+                  _selectedStatus = value!;
+                  _filterPayments();
+                });
+              }, ['All', 'Completed', 'Pending', 'Failed']),
+              _buildDropdown('Payment Method', _selectedPaymentMethod, (value) {
+                setState(() {
+                  _selectedPaymentMethod = value!;
+                  _filterPayments();
+                });
+              }, ['All', 'Cash', 'Bank Transfer', 'Mobile Money']),
+              _buildDropdown('Currency', _selectedCurrency, (value) {
+                setState(() {
+                  _selectedCurrency = value!;
+                  _filterPayments();
+                });
+              }, ['All', 'USD', 'ZAR', 'EUR']),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // Payments List
+          Expanded(
+            child: FutureBuilder<List<PaymentHistory>>(
+              future: _filteredPayments,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text("No payments found."));
+                }
+
+                // Display filtered payments
+                final payments = snapshot.data!;
+                return ListView.builder(
+                  itemCount: payments.length,
+                  itemBuilder: (context, index) {
+                    final payment = payments[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        title: Text("\$${payment.amountTotal.toStringAsFixed(2)}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(
+                          "Status: ${payment.status}\nMethod: ${payment.paymentMethod}\nCurrency: ${payment.currency}\nDate: ${DateFormat('yyyy-MM-dd').format(payment.timestamp.toDate())}",
+                        ),
+                        isThreeLine: true,
+                        trailing: Icon(
+                          payment.status == 'Completed'
+                              ? Icons.check_circle
+                              : payment.status == 'Failed'
+                              ? Icons.error
+                              : Icons.hourglass_top,
+                          color: payment.status == 'Completed'
+                              ? Colors.green
+                              : payment.status == 'Failed'
+                              ? Colors.red
+                              : Colors.orange,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDropdown(String label, String value, Function(String?) onChanged, List<String> items) {
+    return DropdownButton<String>(
+      value: value,
+      onChanged: onChanged,
+      items: items.map((item) => DropdownMenuItem(value: item, child: Text(item))).toList(),
+      hint: Text("Filter by $label"),
+    );
+  }
+
+  // **Service Requests Section** - Display Service Requests
+  Widget _buildServiceRequestsTab() {
+    final requestsState = ref.watch(ProviderUtils.serviceRequestsProvider);
+    final residentState = ref.watch(ProviderUtils.residentProfileProvider(widget.resident.email));
+
+    return requestsState.when(
+      data: (requests) => residentState.whenData(
+            (resident) => resident != null
+            ? _buildContent(resident: resident, serviceRequests:  requests)
+            : const Center(child: Text('Resident not found')),
+      ).when(
+        data: (widget) => widget,
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: $error')),
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stackTrace) => Center(child: Text('Error: $error')),
+    );
+  }
+
+  Widget _buildContent({required List<ServiceRequest> serviceRequests, required Resident resident}) {
+    return ResidentServicesRequestsTab(
+        searchTerm: '',
+        ref: ref,
+        requests: serviceRequests.where((request) => request.residentAddress == "${resident.property.houseNumber} ${resident.property.suburb}").toList()
+    );
+  }
+
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,) {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
@@ -45,7 +212,14 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
             _buildInfoCard(
               'General Information',[
                 _buildInfoRow('Account Number', widget.resident.accountNumber),
-                if(widget.resident.balances != null)_buildInfoRow('Current Balance', widget.resident.balances!.last.currentBalance.toString())
+                if(widget.resident.balances != null)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Current Balance', style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text("\$${widget.resident.balances!.last.currentBalance}",style:  TextStyle(fontWeight: FontWeight.bold, color: widget.resident.balances!.last.currentBalance > 0 ? Colors.red : Colors.green),)
+                    ],
+                  )
             ]
 
             ),
@@ -66,7 +240,7 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
                 Tab(text: 'Personal Info'),
                 Tab(text: 'Family'),
                 Tab(text: 'Property'),
-                Tab(text: 'Utilities'),
+                Tab(text: 'Service Requests'),
                 Tab(text: 'Payments'),
               ],
             ),
@@ -77,7 +251,9 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
                   _buildPersonalInfoTab(),
                   _buildFamilyTab(),
                   _buildPropertyTab(),
-                  _buildUtilitiesTab(),
+                  _buildServiceRequestsTab(),
+                  _buildPaymentsTab(),
+                  
                 ],
               ),
             ),
@@ -176,29 +352,6 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
     );
   }
 
-  Widget _buildUtilitiesTab() {
-    return ListView.builder(
-      itemCount: widget.resident.utilityAccounts?.length ?? 0,
-      itemBuilder: (context, index) {
-        final account = widget.resident.utilityAccounts![index];
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: ExpansionTile(
-            title: Text(account.utilityType),
-            children: [
-              _buildInfoRow('Account ID', account.accountId),
-              _buildInfoRow('Current Balance', '\$${account.currentBalance.toStringAsFixed(2)}'),
-              _buildInfoRow('Last Billing Date', DateFormat('yyyy-MM-dd').format(account.lastBillingDate)),
-              _buildInfoRow('Last Payment', '\$${account.lastPaymentAmount.toStringAsFixed(2)}'),
-              if (account.lastPaymentDate != null)
-                _buildInfoRow('Last Payment Date', DateFormat('yyyy-MM-dd').format(account.lastPaymentDate!)),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
 
 
   Widget _buildInfoCard(String title, List<Widget> children) {
@@ -279,6 +432,8 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
     );
   }
 
+
+
   Widget _buildAddFamilyMemberForm() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -319,4 +474,7 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen> with Sing
       ],
     );
   }
+
+
+
 }

@@ -34,14 +34,14 @@ class ResidentServices {
 
   // Method to update an existing resident profile
   static Future<APIResponse<String>> updateResidentProfile({
-    required String nationalId,
+    required String email,
     required Resident updatedProfile,
   }) async {
     try {
       // Ensure the resident exists by checking their nationalId
       final querySnapshot = await _firestore
           .collection('residents')
-          .where('nationalId', isEqualTo: nationalId)
+          .where('email', isEqualTo: email)
           .get();
 
       if (querySnapshot.docs.isEmpty) {

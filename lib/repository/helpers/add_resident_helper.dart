@@ -4,8 +4,10 @@ import 'package:get/get.dart';
 import 'package:municipality/core/utils/providers.dart';
 import 'package:municipality/models/resident.dart';
 import 'package:municipality/services/resident_services.dart';
+import 'package:municipality/widgets/dialogs/password_dialog.dart';
 
 import '../../widgets/circular_loader/circular_loader.dart';
+import '../../widgets/dialogs/update_dialog.dart';
 import '../../widgets/snackbar/custom_snackbar.dart';
 
 class AddResidentHelper {
@@ -175,91 +177,32 @@ class AddResidentHelper {
     return picked;
   }
 
-
-  static Future<void> validateAndUpdatePROFILE({
-    required Resident resident,
+  static Future<void> updateField({
+    required String title,
+    required String initialValue,
+    required ValueChanged<String> onUpdate,
   }) async {
-    // Validate Email
-    if (!GetUtils.isEmail(resident.email)) {
-      CustomSnackBar.showErrorSnackbar(message: 'Please input a valid email.');
-      return;
-    }
-
-    // Validate Phone Number
-    if (resident.phoneNumber.isEmpty ||
-        !GetUtils.isPhoneNumber(resident.phoneNumber)) {
-      CustomSnackBar.showErrorSnackbar(
-          message: 'Please input a valid phone number.');
-      return;
-    }
-
-    // Validate Name
-    if (resident.lastName.isEmpty) {
-      CustomSnackBar.showErrorSnackbar(message: ' First name is required.');
-      return;
-    }
-
-
-    // Validate Name
-    if (resident.lastName.isEmpty) {
-      CustomSnackBar.showErrorSnackbar(message: ' First name is required.');
-      return;
-    }
-
-    if (resident.property.houseNumber.isEmpty) {
-      CustomSnackBar.showErrorSnackbar(message: 'House Number is required.');
-      return;
-    }
-
-    if (resident.property.houseNumber.isEmpty) {
-      CustomSnackBar.showErrorSnackbar(message: 'Suburb is required.');
-      return;
-    }
-
-    if (resident.emergencyContact!.emergencyContactName.isEmpty) {
-      CustomSnackBar.showErrorSnackbar(message: 'Emergency contact is required');
-      return;
-    }
-
-
-    if (resident.emergencyContact!.emergencyContactPhone.isEmpty) {
-      CustomSnackBar.showErrorSnackbar(message: 'Emergency contact phone is required');
-      return;
-    }
-
-    // Validate Previous Employer
-    if (resident.employmentStatus.isEmpty) {
-      CustomSnackBar.showErrorSnackbar(
-          message: 'Previous Employer is required.');
-      return;
-    }
-
-    if (resident.employer.isEmpty) {
-      CustomSnackBar.showErrorSnackbar(
-          message: 'Previous Employer is required.');
-      return;
-    }
-
-    // Show loader while creating user
-    Get.dialog(
-      const CustomLoader(
-        message: 'Creating user',
+    await Get.dialog(
+      UpdateDialog(
+        title: title,
+        initialValue: initialValue,
+        onUpdate: onUpdate,
       ),
-      barrierDismissible: false,
+      barrierDismissible: true,
     );
-    //
-    // await StaffServices.updateUserProfile(
-    //     email: resident.email!, updatedProfile: resident)
-    //     .then((response) {
-    //   if (!response.success) {
-    //     if (!Get.isSnackbarOpen) Get.back();
-    //     CustomSnackBar.showErrorSnackbar(
-    //         message: response.message ?? 'Something went wrong');
-    //   } else {
-    //     if (Get.isDialogOpen!) Get.back();
-    //     CustomSnackBar.showSuccessSnackbar(
-    //         message: 'User account created successfully');
-    //   }
-    // });
+  }
+
+
+  static Future<void> updatePasswordField({
+    required String title,
+    required PasswordUpdateCallback onUpdate,
+  }) async {
+    await Get.dialog(
+      UpdatePasswordDialog(
+        title: title,
+        newPassword: onUpdate,
+      ),
+      barrierDismissible: true,
+    );
   }
 }

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:municipality/core/utils/logs.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/color_constants.dart';
-import '../../core/utils/providers.dart';
 import '../../core/utils/shared_pref.dart';
 import '../../services/auth_service.dart';
 
-class StaffAdminSidebar extends ConsumerWidget {
-  const StaffAdminSidebar({
+class RegularStaffSidebar extends ConsumerWidget {
+  const RegularStaffSidebar({
     super.key,
     required SidebarXController controller,
   }) : _controller = controller;
@@ -18,9 +16,6 @@ class StaffAdminSidebar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userRole = ref.watch(ProviderUtils.userRoleProvider);
-
-    DevLogs.logWarning(userRole.toString());
 
     return SidebarX(
       controller: _controller,
@@ -107,10 +102,6 @@ class StaffAdminSidebar extends ConsumerWidget {
         const SidebarXItem(
           icon: FontAwesomeIcons.house,
           label: 'Manage Residents',
-        ),
-        const SidebarXItem(
-          icon: FontAwesomeIcons.users,
-          label: 'Manage Staff',
         ),
         const SidebarXItem(
           icon: Icons.dashboard,
