@@ -32,7 +32,7 @@ class RoutesHelper {
   static String residentLoginScreen = '/residentLogin';
   static String residentSignUpScreen = '/residentSignUp';
   static String forgotPasswordScreen = '/forgotPassword';
-  static String resendVerificationEmailScreen = '/resendVerificationEmail';
+  static String resendResetEmailScreen = '/resendVerificationEmail';
   static String adminHomeScreen = '/adminHome';
   static String userHomeScreen = '/userHome';
   static String adminStaffStatsScreen = '/adminStaffStats';
@@ -58,7 +58,7 @@ class RoutesHelper {
           return EmailVerificationScreen(user: user);
         }),
     GetPage(
-        name: resendVerificationEmailScreen,
+        name: resendResetEmailScreen,
         page: () {
           final String email = Get.arguments as String;
 
