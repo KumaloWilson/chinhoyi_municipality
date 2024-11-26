@@ -117,10 +117,8 @@ class ForgotPasswordScreen extends StatelessWidget {
 
                       await AuthServices.sendPasswordResetEmail(email: emailController.text.trim()).then((response) {
                         Get.offAllNamed(
-                          RoutesHelper.resendVerificationEmailScreen,
-                          arguments: [
-                            emailController.text.trim()
-                          ]
+                          RoutesHelper.resendResetEmailScreen,
+                          arguments: emailController.text.trim()
                         );
                       });
 
