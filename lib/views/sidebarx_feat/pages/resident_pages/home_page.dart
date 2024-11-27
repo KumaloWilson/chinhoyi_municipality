@@ -42,7 +42,7 @@ class _ChinhoyiMunicipalityScreenState extends State<ChinhoyiMunicipalityScreen>
                       const Text(
                         'MUNICIPALITY\nOF CHINHOYI',
                         style: TextStyle(
-                          fontSize: 50,
+                          fontSize: 40,
                           fontWeight: FontWeight.bold,
                           height: 1.2,
                         ),
@@ -51,7 +51,7 @@ class _ChinhoyiMunicipalityScreenState extends State<ChinhoyiMunicipalityScreen>
                       const Text(
                         'A smart city of\nchoice by 2030',
                         style: TextStyle(
-                          fontSize: 32,
+                          fontSize: 25,
                           height: 1.2,
                         ),
                       ),
@@ -79,7 +79,7 @@ class _ChinhoyiMunicipalityScreenState extends State<ChinhoyiMunicipalityScreen>
                                   child: Text(
                                     'CUSTOMER SURVEY 2024',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.bold,
                                       color: !_isSurveyHovered
                                           ? Colors.white
@@ -114,7 +114,7 @@ class _ChinhoyiMunicipalityScreenState extends State<ChinhoyiMunicipalityScreen>
                                   child: Text(
                                     'PAY BILLS ONLINE',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 12,
                                       color: _isPayBillsHovered
                                           ? Colors.white
                                           : Pallete.primaryColor,

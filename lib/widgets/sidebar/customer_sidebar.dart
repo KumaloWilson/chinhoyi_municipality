@@ -109,10 +109,6 @@ class CustomerSidebar extends ConsumerWidget {
           label: 'Dashboard',
         ),
         const SidebarXItem(
-          icon: FontAwesomeIcons.users,
-          label: 'My Residence',
-        ),
-        const SidebarXItem(
           icon: Icons.dashboard,
           label: 'Service Requests',
         ),

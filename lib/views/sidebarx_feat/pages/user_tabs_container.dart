@@ -29,14 +29,12 @@ class CustomerTabScreensContainer extends StatelessWidget {
           case 1:
             return const CustomerDashBoard();
           case 2:
-            return const MyResidenceManagementScreen();
-          case 3:
             return const ResidentManageServiceRequestsScreen();
-          case 4:
+          case 3:
             return const AnnouncementManagementScreen();
-          case 5:
+          case 4:
             return const CustomerPaymentsHistory();
-          case 6:
+          case 5:
             return const ResidentProfileScreen();
           default:
             return Text(
